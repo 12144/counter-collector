@@ -1,6 +1,7 @@
 import axios, { AxiosPromise, AxiosRequestConfig } from "axios"
 // import Cookie from "js-cookie"
 
+
 const baseURL = "http://127.0.0.1:7001"
 
 const instance = axios.create({
