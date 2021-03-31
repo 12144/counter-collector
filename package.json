@@ -1,10 +1,9 @@
 {
   "name": "counter-collector",
-  "version": "0.0.34",
+  "version": "0.0.67",
   "description": "Counter标准前端埋点数据采集sdk",
   "main": "./dist/index.js",
   "scripts": {
-    "test": "node_modules/typescript/bin/tsc && node dist/test.js",
     "_publish": "node_modules/typescript/bin/tsc && npm publish"
   },
   "author": "",

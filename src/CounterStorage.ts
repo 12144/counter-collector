@@ -5,6 +5,9 @@
  * 如果新的请求与上一次请求的时间不超过30s，那么count不增加（双击过滤规则），如果超过则增加count，更新lastTime
 */
 
+// 测试的时候可以为减少时间可以写短一点，推荐3s
+export const DoubleClickInternal = 30000
+
 interface ItemMapValue {
   title_id: string;
   // metric
@@ -14,7 +17,9 @@ interface ItemMapValue {
   total_item_investigations: number;
   no_license: number;
   limit_exceeded: number;
-  // 用于double-click
+  /** 用于double-click
+   * number是上一次对某item进行操作的时间，map里有无记录来判断unique指标
+   * */ 
   map:{
     requests: Map<string, number>;
     investigations: Map<string, number>;
@@ -171,14 +176,17 @@ export default class CounterStorage {
     dealRequest(itemRecord: ItemMapValue, titleRecord: TitleMapValue, platformRecord: PlatformMapValue, key: string):void {
       const now = new Date().getTime();
       const last_time = itemRecord.map.requests.get(key)
+      let ignoreLastTime = false
 
       if(last_time) {
-        if(now - last_time > 30000) {
+        if(now - last_time > DoubleClickInternal) {
+          ignoreLastTime = true
           itemRecord.total_item_requests++
           titleRecord.total_item_requests++
           platformRecord.total_item_requests++
         }
       }else {
+        ignoreLastTime = true
         itemRecord.total_item_requests++
         titleRecord.total_item_requests++
         platformRecord.total_item_requests++
@@ -193,15 +201,15 @@ export default class CounterStorage {
       }
 
       itemRecord.map.requests.set(key, now)
-      this.dealInvestigation(itemRecord, titleRecord, platformRecord, key)
+      this.dealInvestigation(itemRecord, titleRecord, platformRecord, key, ignoreLastTime)
     }
 
-    dealInvestigation(itemRecord: ItemMapValue, titleRecord: TitleMapValue, platformRecord: PlatformMapValue, key: string):void {
+    dealInvestigation(itemRecord: ItemMapValue, titleRecord: TitleMapValue, platformRecord: PlatformMapValue, key: string, ignoreLastTime?: boolean):void {
       const now = new Date().getTime()
       const last_time = itemRecord.map.investigations.get(key)
 
       if(last_time) {
-        if(now - last_time > 30000) {
+        if(ignoreLastTime || now - last_time > DoubleClickInternal) {
           itemRecord.total_item_investigations++
           titleRecord.total_item_investigations++
           platformRecord.total_item_investigations++
@@ -226,7 +234,7 @@ export default class CounterStorage {
       const now = new Date().getTime()
       const last_time = itemRecord.map.no_license.get(key)
 
-      if(!last_time || now - last_time > 30000) {
+      if(!last_time || now - last_time > DoubleClickInternal) {
         itemRecord.no_license++
         titleRecord.no_license++
         platformRecord.no_license++
@@ -238,7 +246,7 @@ export default class CounterStorage {
       const now = new Date().getTime()
       const last_time = itemRecord.map.limit_exceeded.get(key)
 
-      if(!last_time || now - last_time > 30000) {
+      if(!last_time || now - last_time > DoubleClickInternal) {
         itemRecord.limit_exceeded++
         titleRecord.limit_exceeded++
         platformRecord.limit_exceeded++
@@ -246,8 +254,30 @@ export default class CounterStorage {
       itemRecord.map.limit_exceeded.set(key, now)
     }
 
-    // 清空记录
+    // 只清理指标数据，保留记录unique指标的map
     clear():void {
+      this.itemMap.forEach((value, key)=>{
+        value.unique_item_requests = 0
+        value.total_item_requests = 0
+        value.unique_item_investigations= 0
+        value.total_item_investigations= 0
+        value.no_license= 0
+        value.limit_exceeded= 0
+      })
+      this.titleMap.forEach((value)=>{
+        value.unique_item_requests = 0
+        value.total_item_requests = 0
+        value.unique_item_investigations = 0
+        value.total_item_investigations = 0
+        value.no_license = 0
+        value.limit_exceeded = 0
+        value.unique_title_requests = 0
+        value.unique_title_investigations = 0
+      })
+      this.platformMap.clear()
+    }
+
+    clearAll(): void{
       this.itemMap.clear()
       this.titleMap.clear()
       this.platformMap.clear()
@@ -255,45 +285,63 @@ export default class CounterStorage {
 
     toArray(): UploadData[]{
       const data: UploadData[] = []
+
+      function isEmpty(value: any) {
+        return Boolean(
+          value.total_item_requests||
+          value.unique_item_requests||
+          value.total_item_investigations||
+          value.unique_item_investigations||
+          value.unique_title_requests||
+          value.unique_title_investigations||
+          value.no_license ||
+          value.limit_exceeded)
+      }
       this.itemMap.forEach((value: ItemMapValue, key: string)=>{
-        data.push({ 
-          item_id: key,
-          title_id: value.title_id,
-          unique_item_requests: value.unique_item_requests, 
-          total_item_requests: value.total_item_requests, 
-          unique_item_investigations: value.unique_item_investigations,
-          total_item_investigations: value.total_item_investigations,
-          no_license: value.no_license,
-          limit_exceeded: value.limit_exceeded,
-        })
+        if(isEmpty(value)){
+          data.push({ 
+            item_id: key,
+            title_id: value.title_id,
+            unique_item_requests: value.unique_item_requests, 
+            total_item_requests: value.total_item_requests, 
+            unique_item_investigations: value.unique_item_investigations,
+            total_item_investigations: value.total_item_investigations,
+            no_license: value.no_license,
+            limit_exceeded: value.limit_exceeded,
+          })
+        }
       })
 
       this.titleMap.forEach((value: TitleMapValue, key: string)=>{
-        data.push({ 
-          title_id: key,
-          unique_item_requests: value.unique_item_requests, 
-          total_item_requests: value.total_item_requests, 
-          unique_item_investigations: value.unique_item_investigations,
-          total_item_investigations: value.total_item_investigations,
-          no_license: value.no_license,
-          limit_exceeded: value.limit_exceeded,
-          unique_title_requests: value.unique_title_requests,
-          unique_title_investigations: value.unique_title_investigations,
-        })
+        if(isEmpty(value)){
+          data.push({ 
+            title_id: key,
+            unique_item_requests: value.unique_item_requests, 
+            total_item_requests: value.total_item_requests, 
+            unique_item_investigations: value.unique_item_investigations,
+            total_item_investigations: value.total_item_investigations,
+            no_license: value.no_license,
+            limit_exceeded: value.limit_exceeded,
+            unique_title_requests: value.unique_title_requests,
+            unique_title_investigations: value.unique_title_investigations,
+          })
+        }
       })
 
       this.platformMap.forEach((value: PlatformMapValue, key:string)=>{
-        data.push({
-          platform_id:key,
-          unique_item_requests: value.unique_item_requests, 
-          total_item_requests: value.total_item_requests, 
-          unique_item_investigations: value.unique_item_investigations,
-          total_item_investigations: value.total_item_investigations,
-          no_license: value.no_license,
-          limit_exceeded: value.limit_exceeded,
-          unique_title_requests: value.unique_title_requests,
-          unique_title_investigations: value.unique_title_investigations,
-        })
+        if(isEmpty(value)){
+          data.push({
+            platform_id:key,
+            unique_item_requests: value.unique_item_requests, 
+            total_item_requests: value.total_item_requests, 
+            unique_item_investigations: value.unique_item_investigations,
+            total_item_investigations: value.total_item_investigations,
+            no_license: value.no_license,
+            limit_exceeded: value.limit_exceeded,
+            unique_title_requests: value.unique_title_requests,
+            unique_title_investigations: value.unique_title_investigations,
+          })
+        }
       })
       return data
     }

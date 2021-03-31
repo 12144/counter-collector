@@ -19,15 +19,11 @@ export default class CounterCollector {
    * @param interval 采集间隔，单位ms，默认是10分钟
    */
     static init(interval: number = 1000*60*10): void {
-      if(!CounterCollector[counterStorage]){
-        CounterCollector[counterStorage] = new CounterStorage()
-      }
+      CounterCollector[counterStorage] = new CounterStorage()
 
-      if(!CounterCollector[counterInterval]) {
-        CounterCollector[counterInterval] = setInterval(function(){
-          CounterCollector.upload()
-        }, interval)
-      }
+      CounterCollector[counterInterval] = setInterval(function(){
+        CounterCollector.upload()
+      }, interval)
     }
 
     static async getUserId(user_id?:string, ip?: string): Promise<string>{
@@ -72,13 +68,17 @@ export default class CounterCollector {
       return new Promise((resolve, reject) => {
         const data: UploadData[] = this[counterStorage].toArray()
   
-        uploadData(data).then(res => {
+        if(data.length) {
+          uploadData(data).then(res => {
           // 上传成功后清空本地存储
-          this[counterStorage].clear()
-          resolve('success')
-        }).catch(err => {
-          reject(err)
-        })
+            this[counterStorage].clear()
+            resolve('success')
+          }).catch(err => {
+            reject(err)
+          })
+        }else {
+          resolve('empty')
+        }
       })
     }
 

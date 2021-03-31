@@ -3,7 +3,7 @@ import { getRecord } from "../request"
 export async function getPreItemMetric(item_id:string, month: string): Promise<any>{
   const result = await getRecord({
     table: 'Item_Metric',
-    condtiion: {
+    condition: {
       item_id,
       month,
       access_method: 'Regular',
@@ -37,7 +37,7 @@ export async function getPostItemMetric(item_id:string, month: string): Promise<
 export async function getPreTitleMetric(title_id:string, month: string): Promise<any>{
   const result =  await getRecord({
     table: 'Title_Metric',
-    condtiion: {
+    condition: {
       title_id,
       month,
       access_method: 'Regular',
@@ -73,7 +73,7 @@ export async function getPostTitleMetric(title_id:string, month: string): Promis
 export async function getPrePlatformMetric(platform_id:string, month: string): Promise<any>{
   const result = await getRecord({
     table: 'Platform_Metric',
-    condtiion: {
+    condition: {
       platform_id,
       month,
       access_method: 'Regular',
@@ -107,9 +107,9 @@ export async function getPostPlatformMetric(platform_id:string, month: string): 
 }
 
 export async function getPreStatus(item_id: string, title_id: string, platform_id: string, month: string):Promise<any> {
-  const preItemMetric = await getPreItemMetric('7038', month)
-  const preTitleMetric = await getPreTitleMetric('8695', month)
-  const prePlatformMetric = await getPrePlatformMetric('1', month)
+  const preItemMetric = await getPreItemMetric(item_id, month)
+  const preTitleMetric = await getPreTitleMetric(title_id, month)
+  const prePlatformMetric = await getPrePlatformMetric(platform_id, month)
 
   return {
     preItemMetric,
@@ -118,14 +118,18 @@ export async function getPreStatus(item_id: string, title_id: string, platform_i
   }
 }
 
-export async function getPostStatus(item_id:string, title_id:string, platform_id:string, month:string): Promise<any> {
-  const postItemMetric = await getPostItemMetric('7038', month)
-  const postTitleMetric = await getPostTitleMetric('8695', month)
-  const postPlatformMetric = await getPostPlatformMetric('1', month)
+export function getPostStatus(item_id:string, title_id:string, platform_id:string, month:string): Promise<any> {
+  return new Promise((resolve) => {
+    setTimeout(async () => {
+      const postItemMetric = await getPostItemMetric(item_id, month)
+      const postTitleMetric = await getPostTitleMetric(title_id, month)
+      const postPlatformMetric = await getPostPlatformMetric(platform_id, month)
 
-  return {
-    postItemMetric,
-    postTitleMetric,
-    postPlatformMetric
-  }
+      resolve( {
+        postItemMetric,
+        postTitleMetric,
+        postPlatformMetric
+      })
+    }, 2000)
+  })
 }
