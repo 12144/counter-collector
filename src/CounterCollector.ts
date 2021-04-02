@@ -3,8 +3,9 @@
  * 1.初始化本读存储对象单例
  * 2.采集数据存储至本地存储对象中
  * 3.定时批量将本地存储数据上传至服务器
+ * 4.执行测试用例
  */
-import CounterStorage, { MetricType, UploadData } from "./CounterStorage"
+import CounterStorage,  {Config, MetricType, UploadData } from "./CounterStorage"
 import { uploadData, getUserIP } from "./request/index"
 import Test from "./counterTest/index"
 
@@ -15,12 +16,11 @@ export default class CounterCollector {
     static [counterStorage]: CounterStorage;
     static [counterInterval]: NodeJS.Timeout;
     /**
-   * 初始化，在window上挂载一个单例作为本地存储
+   * 初始化
    * @param interval 采集间隔，单位ms，默认是10分钟
    */
     static init(interval: number = 1000*60*10): void {
       CounterCollector[counterStorage] = new CounterStorage()
-
       CounterCollector[counterInterval] = setInterval(function(){
         CounterCollector.upload()
       }, interval)
@@ -55,15 +55,14 @@ export default class CounterCollector {
    * @param user_id 用户标识符
    * @param session_id session的id
    * @param item_id 项标识符
-   * @param metric_type 指标类型可选值 request | investigation
+   * @param title_id 标题标识符
+   * @param platform_id 平台标识符
+   * @param metric_type 指标类型可选值见枚举类型MetricType
    */
     static collect(user_id: string, session_id:string, item_id: string, title_id:string, platform_id: string, metric_type: MetricType): void {
       this[counterStorage].insert(user_id, session_id, item_id, title_id, platform_id, metric_type)
     }
 
-    /**
-     *  上传数据
-     */
     static upload(): Promise<any>{
       return new Promise((resolve, reject) => {
         const data: UploadData[] = this[counterStorage].toArray()
@@ -84,6 +83,8 @@ export default class CounterCollector {
 
     // 测试用例
     static async test(): Promise<void> {
+      Config.DoubleClickInternal = 3000
       await Test()
+      Config.DoubleClickInternal = 30000
     }
 }

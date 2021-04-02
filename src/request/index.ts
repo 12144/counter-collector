@@ -1,9 +1,6 @@
 import axios, { AxiosPromise, AxiosRequestConfig, AxiosResponse } from "axios"
 import { UploadData } from "../CounterStorage"
 
-// import Cookie from "js-cookie"
-
-
 const baseURL = "http://localhost/counter"
 
 const instance = axios.create({
@@ -41,4 +38,12 @@ export function getUserIP(): Promise<any>{
 
 export const getRecord = (data: any):Promise<any> => {
   return Post('/getRecord', data)
+}
+
+export const initTest = ():Promise<any> => {
+  return Get('/initTest')
+}
+
+export const clearTest = ():Promise<any> => {
+  return Get('/clearTest')
 }

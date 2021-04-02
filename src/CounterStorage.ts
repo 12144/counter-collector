@@ -1,25 +1,32 @@
-/** 
- * 本地存储数据结构 
- * key是一个组合用户标识符和项标识符的字符串，标识哪个用户点击了哪个项
- * value结构如MapValue所示，count计数，lastTime是时间戳记录同一个用户点击同一项最近的时间
- * 如果新的请求与上一次请求的时间不超过30s，那么count不增加（双击过滤规则），如果超过则增加count，更新lastTime
-*/
+// 本地存储
 
-// 测试的时候可以为减少时间可以写短一点，推荐3s
-export const DoubleClickInternal = 30000
+export const Config = { DoubleClickInternal : 30000 }
+
+/** MapValue 
+ * 分为两个部分：指标信息和用于记录unique行为的map
+ *  指标信息：unique_item_requests，total_item_requests等
+ *  map详细描述见下方
+*/
 
 interface ItemMapValue {
   title_id: string;
-  // metric
   unique_item_requests: number; 
   total_item_requests: number; 
   unique_item_investigations: number;
   total_item_investigations: number;
   no_license: number;
   limit_exceeded: number;
-  /** 用于double-click
-   * number是上一次对某item进行操作的时间，map里有无记录来判断unique指标
-   * */ 
+
+  /** 用于double-click和记录unique指标
+   * map里分为四个小map分别对应四种指标
+   * map的key是用userid和sessionid生成的字符串，可以保证不同用户或者同一个用户在不同session内的行为是独立计数的，符合counter标准
+   * number是最近一次对某item进行操作的时间
+   * 
+   * 逻辑是如果map里没有该记录，则插入记录（key, 当前时间）
+   * 如果map里有记录，则比较当前时间与上一次操作的时间差是否大于30s
+   * 若大于30s，则该行为有效，更新相关指标，更新最近一次操作的时间
+   * 若小于30s，则该行为需要被过滤掉，不更新相关指标，但更新最近一次操作的时间，因为根据counter标准，应该使用最后一次操作来代替前一次操作，防止短时间内连续多次的相同操作
+   */ 
   map:{
     requests: Map<string, number>;
     investigations: Map<string, number>;
@@ -29,7 +36,6 @@ interface ItemMapValue {
 }
 
 interface TitleMapValue {
-  // metric
   unique_item_requests: number; 
   total_item_requests: number; 
   unique_item_investigations: number;
@@ -38,7 +44,13 @@ interface TitleMapValue {
   limit_exceeded: number;
   unique_title_requests: number;
   unique_title_investigations: number;
-  // unique
+  /**
+   * 用于记录unique_title指标
+   * map里分为两个小map，实际上是一个集合，集合里元素的值也是用userid和sessionid生成的值，标识该用户在该session内访问了此title
+   * 逻辑是如果用户对某个item的行为是有效的，则视为其访问了该item所属的title
+   * 如果集合里没有此记录，则更新相关指标
+   * 如果集合里有此记录，则不做更新
+   */
   map: {
     requests: Set<string>;
     investigations: Set<string>;
@@ -46,7 +58,6 @@ interface TitleMapValue {
 }
 
 interface PlatformMapValue {
-  // metric
   unique_item_requests: number; 
   total_item_requests: number; 
   unique_item_investigations: number;
@@ -79,6 +90,9 @@ export enum MetricType {
 }
 
 export default class CounterStorage {
+    /**
+     * itemMap, titleMap, platformMap分别记录item级别，title级别, platform级别的指标信息
+     */
     itemMap: Map<string,ItemMapValue>;
     titleMap: Map<string, TitleMapValue>;
     platformMap: Map<string, PlatformMapValue>;
@@ -96,7 +110,6 @@ export default class CounterStorage {
       })
     }
     
-    // 插入新的记录
     insert(user_id: string, session_id: string, item_id: string, title_id: string, platform_id:string, metricType: MetricType):void {
       const itemMap = this.itemMap
       const titleMap = this.titleMap
@@ -125,14 +138,14 @@ export default class CounterStorage {
     getItemRecord(item_id: string, title_id: string): ItemMapValue{
       return this.itemMap.get(item_id) || {
         title_id,
-        // metric
+        
         unique_item_requests: 0,
         total_item_requests: 0, 
         unique_item_investigations: 0,
         total_item_investigations: 0,
         no_license: 0,
         limit_exceeded: 0,
-        // 用于double-click
+        
         map:{
           requests: new Map(),
           investigations: new Map(),
@@ -152,7 +165,7 @@ export default class CounterStorage {
         limit_exceeded: 0,
         unique_title_requests: 0,
         unique_title_investigations: 0,
-        // unique
+        
         map: {
           requests: new Set(),
           investigations: new Set()
@@ -179,7 +192,7 @@ export default class CounterStorage {
       let ignoreLastTime = false
 
       if(last_time) {
-        if(now - last_time > DoubleClickInternal) {
+        if(now - last_time > Config.DoubleClickInternal) {
           ignoreLastTime = true
           itemRecord.total_item_requests++
           titleRecord.total_item_requests++
@@ -209,7 +222,7 @@ export default class CounterStorage {
       const last_time = itemRecord.map.investigations.get(key)
 
       if(last_time) {
-        if(ignoreLastTime || now - last_time > DoubleClickInternal) {
+        if(ignoreLastTime || now - last_time > Config.DoubleClickInternal) {
           itemRecord.total_item_investigations++
           titleRecord.total_item_investigations++
           platformRecord.total_item_investigations++
@@ -234,7 +247,7 @@ export default class CounterStorage {
       const now = new Date().getTime()
       const last_time = itemRecord.map.no_license.get(key)
 
-      if(!last_time || now - last_time > DoubleClickInternal) {
+      if(!last_time || now - last_time > Config.DoubleClickInternal) {
         itemRecord.no_license++
         titleRecord.no_license++
         platformRecord.no_license++
@@ -246,7 +259,7 @@ export default class CounterStorage {
       const now = new Date().getTime()
       const last_time = itemRecord.map.limit_exceeded.get(key)
 
-      if(!last_time || now - last_time > DoubleClickInternal) {
+      if(!last_time || now - last_time > Config.DoubleClickInternal) {
         itemRecord.limit_exceeded++
         titleRecord.limit_exceeded++
         platformRecord.limit_exceeded++
@@ -254,7 +267,7 @@ export default class CounterStorage {
       itemRecord.map.limit_exceeded.set(key, now)
     }
 
-    // 只清理指标数据，保留记录unique指标的map
+    // 只清理指标数据，保留记录unique指标的map，如果直接清理所有数据，那么同一session内的unique行为会被重复计数
     clear():void {
       this.itemMap.forEach((value, key)=>{
         value.unique_item_requests = 0
@@ -277,12 +290,14 @@ export default class CounterStorage {
       this.platformMap.clear()
     }
 
+    // 清除所有数据
     clearAll(): void{
       this.itemMap.clear()
       this.titleMap.clear()
       this.platformMap.clear()
     }
 
+    // 转换为后端接收的格式
     toArray(): UploadData[]{
       const data: UploadData[] = []
 

@@ -9,9 +9,10 @@ export async function getPreItemMetric(item_id:string, month: string): Promise<a
       access_method: 'Regular',
     }
   })
+
   return  result.data || {
     item_id,
-    month,
+    month: new Date(new Date(month).getTime()).toJSON(),
     access_method: 'Regular',
     total_item_investigations: 0,
     unique_item_investigations: 0,
@@ -45,7 +46,7 @@ export async function getPreTitleMetric(title_id:string, month: string): Promise
   }) 
   return result.data || {
     title_id,
-    month,
+    month: new Date(new Date(month).getTime()).toJSON(),
     access_method: 'Regular',
     total_item_investigations: 0,
     unique_item_investigations: 0,
@@ -81,7 +82,7 @@ export async function getPrePlatformMetric(platform_id:string, month: string): P
   }) 
   return result.data || {
     platform_id,
-    month,
+    month: new Date(new Date(month).getTime()).toJSON(),
     access_method: 'Regular',
     total_item_investigations: 0,
     unique_item_investigations: 0,
@@ -107,9 +108,9 @@ export async function getPostPlatformMetric(platform_id:string, month: string): 
 }
 
 export async function getPreStatus(item_id: string, title_id: string, platform_id: string, month: string):Promise<any> {
-  const preItemMetric = await getPreItemMetric(item_id, month)
-  const preTitleMetric = await getPreTitleMetric(title_id, month)
-  const prePlatformMetric = await getPrePlatformMetric(platform_id, month)
+  const preItemMetric = item_id ? await getPreItemMetric(item_id, month) : null
+  const preTitleMetric = title_id ? await getPreTitleMetric(title_id, month) : null
+  const prePlatformMetric = platform_id ? await getPrePlatformMetric(platform_id, month) : null
 
   return {
     preItemMetric,
@@ -121,15 +122,15 @@ export async function getPreStatus(item_id: string, title_id: string, platform_i
 export function getPostStatus(item_id:string, title_id:string, platform_id:string, month:string): Promise<any> {
   return new Promise((resolve) => {
     setTimeout(async () => {
-      const postItemMetric = await getPostItemMetric(item_id, month)
-      const postTitleMetric = await getPostTitleMetric(title_id, month)
-      const postPlatformMetric = await getPostPlatformMetric(platform_id, month)
+      const postItemMetric = item_id ? await getPostItemMetric(item_id, month) : null
+      const postTitleMetric = title_id ? await getPostTitleMetric(title_id, month) : null
+      const postPlatformMetric = platform_id ? await getPostPlatformMetric(platform_id, month) : null
 
       resolve( {
         postItemMetric,
         postTitleMetric,
         postPlatformMetric
       })
-    }, 2000)
+    }, 2000) // 给个延迟，保证数据都更新至数据库中
   })
 }
