@@ -5,22 +5,32 @@
  * 3.定时批量将本地存储数据上传至服务器
  * 4.执行测试用例
  */
-import CounterStorage,  {Config, MetricType, UploadData } from "./CounterStorage"
+import CounterStorage,  {Config, UploadData } from "./CounterStorage"
 import { uploadData, getUserIP } from "./request/index"
 import Test from "./counterTest/index"
 
 const counterStorage = Symbol("counterStorage")
 const counterInterval = Symbol("counterInterval")
 
+export enum MetricType {
+  REQUEST = 'request',
+  INVESTIGATION = 'investigation',
+  NO_LICENSE = 'no_license',
+  LIMIT_EXCEEDED = 'limit_exceeded'
+}
+
 export default class CounterCollector {
     static [counterStorage]: CounterStorage;
     static [counterInterval]: NodeJS.Timeout;
+    static baseURL: string;
     /**
    * 初始化
    * @param interval 采集间隔，单位ms，默认是10分钟
    */
-    static init(interval: number = 1000*60*10): void {
+    static init(config: {interval?: number, baseUrl?: string} = {}): void {
+      const {interval = 1000*60*10, baseUrl = '' } = config
       CounterCollector[counterStorage] = new CounterStorage()
+      CounterCollector.baseURL = baseUrl
       CounterCollector[counterInterval] = setInterval(function(){
         CounterCollector.upload()
       }, interval)
@@ -82,9 +92,9 @@ export default class CounterCollector {
     }
 
     // 测试用例
-    static async test(): Promise<void> {
+    static async test(clearTest = false): Promise<void> {
       Config.DoubleClickInternal = 3000
-      await Test()
+      await Test(clearTest)
       Config.DoubleClickInternal = 30000
     }
 }

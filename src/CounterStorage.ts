@@ -1,4 +1,5 @@
 // 本地存储
+import {MetricType} from './CounterCollector'
 
 export const Config = { DoubleClickInternal : 30000 }
 
@@ -82,12 +83,7 @@ export interface UploadData {
   unique_title_investigations?: number;
 }
 
-export enum MetricType {
-  REQUEST = 'request',
-  INVESTIGATION = 'investigation',
-  NO_LICENSE = 'no_license',
-  LIMIT_EXCEEDED = 'limit_exceeded'
-}
+
 
 export default class CounterStorage {
     /**

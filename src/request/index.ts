@@ -1,10 +1,8 @@
 import axios, { AxiosPromise, AxiosRequestConfig, AxiosResponse } from "axios"
 import { UploadData } from "../CounterStorage"
-
-const baseURL = "http://localhost/counter"
+import CounterCollector from '../CounterCollector'
 
 const instance = axios.create({
-  baseURL: baseURL,
   withCredentials: true,
 })
 
@@ -20,11 +18,11 @@ instance.interceptors.response.use((response: AxiosResponse) => {
 })
 
 function Post<T, R=AxiosPromise<T>>(url: string, data: any, config?: AxiosRequestConfig): Promise<R> {
-  return instance.post(url, data, config)
+  return instance.post(url, data, {baseURL: CounterCollector.baseURL, ...config})
 }
 
 function Get<T, R=AxiosPromise<T>>(url: string, config?: AxiosRequestConfig): Promise<R> {
-  return instance.get(url, config)
+  return instance.get(url, {baseURL: CounterCollector.baseURL, ...config})
 }
 
 export function uploadData(data: UploadData[]): Promise<any> {

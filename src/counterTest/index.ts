@@ -1,6 +1,5 @@
 import assert from "assert"
-import CounterCollector from "../CounterCollector"
-import { MetricType } from "../CounterStorage"
+import CounterCollector, { MetricType } from "../CounterCollector"
 import {
   getPreStatus,
   getPostStatus,
@@ -11,7 +10,7 @@ import { initTest, clearTest } from "../request"
 const LongerDoubleClickInternal = 4000
 const UploadInterval = 7*1000
 
-export default async function Test (): Promise<any>{
+export default async function Test (_clearTest = false): Promise<any>{
   const now = new Date()
   const month = `${now.getFullYear()}-${now.getMonth() + 1}-01`;
   await initTest()
@@ -34,12 +33,14 @@ export default async function Test (): Promise<any>{
   await testDifferentInvestigation(month)
   await testCounterScenario(month)
   console.log('全部测试用例通过!')
-  // await clearTest()
+  if(_clearTest){
+    await clearTest()
+  }
 }
 
 // 测试访问一个platform1 -> title1-2 -> item1-2-1，指标是否能够正常写入数据库
 async function testInvestigation(month: string) {
-  CounterCollector.init()
+  CounterCollector.init({baseUrl: CounterCollector.baseURL})
   // 访问前的状态
   const {preItemMetric,preTitleMetric,prePlatformMetric } = await getPreStatus('7038','8695', '1', month)
   // 访问了item1-2-1
@@ -68,7 +69,7 @@ async function testInvestigation(month: string) {
 
 // 测试访问一个platform1 -> title1-2 -> item1-2-1两次， unique指标不应重复计数， total指标重复计数
 async function testUniqueInvestigation(month: string) {
-  CounterCollector.init()
+  CounterCollector.init({baseUrl: CounterCollector.baseURL})
   // 访问前的状态
   const {preItemMetric,preTitleMetric,prePlatformMetric } = await getPreStatus('7038','8695', '1', month)
   const user_id = await CounterCollector.getUserId()
@@ -100,7 +101,7 @@ async function testUniqueInvestigation(month: string) {
 
 // 测试下载一个platform1 -> title1-2 -> item1-2-1，requets和investigations指标都应该计数
 async function testRequests(month: string) {
-  CounterCollector.init()
+  CounterCollector.init({baseUrl: CounterCollector.baseURL})
   // 访问前的状态
   const {preItemMetric,preTitleMetric,prePlatformMetric } = await getPreStatus('7038','8695', '1', month)
   const user_id = await CounterCollector.getUserId()
@@ -138,7 +139,7 @@ async function testRequests(month: string) {
 
 // 测试下载一个platform1 -> title1-2 -> item1-2-1两次，requets和investigations指标都应该计数
 async function testUniqueRequests(month: string) {
-  CounterCollector.init()
+  CounterCollector.init({baseUrl: CounterCollector.baseURL})
   // 访问前的状态
   const {preItemMetric,preTitleMetric,prePlatformMetric } = await getPreStatus('7038','8695', '1', month)
   const user_id = await CounterCollector.getUserId()
@@ -178,7 +179,7 @@ async function testUniqueRequests(month: string) {
 
 // 测试no_license platform1 -> title1-2 -> item1-2-1
 async function testNoLicense(month: string) {
-  CounterCollector.init()
+  CounterCollector.init({baseUrl: CounterCollector.baseURL})
   const {preItemMetric,preTitleMetric,prePlatformMetric } = await getPreStatus('7038','8695', '1', month)
   const user_id = await CounterCollector.getUserId()
   const session_id = await CounterCollector.getSessionId()
@@ -201,7 +202,7 @@ async function testNoLicense(month: string) {
 
 // 测试no_license platform1 -> title1-2 -> item1-2-1两次
 async function testDoubleClickNoLicense(month:string) {
-  CounterCollector.init()
+  CounterCollector.init({baseUrl: CounterCollector.baseURL})
   const {preItemMetric,preTitleMetric,prePlatformMetric } = await getPreStatus('7038','8695', '1', month)
   const user_id = await CounterCollector.getUserId()
   const session_id = await CounterCollector.getSessionId()
@@ -225,7 +226,7 @@ async function testDoubleClickNoLicense(month:string) {
 
 // 测试limit_exceeded platform1 -> title1-2 -> item1-2-1
 async function testLimitExceeded(month:string) {
-  CounterCollector.init()
+  CounterCollector.init({baseUrl: CounterCollector.baseURL})
   const {preItemMetric,preTitleMetric,prePlatformMetric } = await getPreStatus('7038','8695', '1', month)
   const user_id = await CounterCollector.getUserId()
   const session_id = await CounterCollector.getSessionId()
@@ -248,7 +249,7 @@ async function testLimitExceeded(month:string) {
 
 // 测试limit_exceeded platform1 -> title1-2 -> item1-2-1两次
 async function testDoubleClickLimitExceeded(month:string) {
-  CounterCollector.init()
+  CounterCollector.init({baseUrl: CounterCollector.baseURL})
   const {preItemMetric,preTitleMetric,prePlatformMetric } = await getPreStatus('7038','8695', '1', month)
   const user_id = await CounterCollector.getUserId()
   const session_id = await CounterCollector.getSessionId()
@@ -271,7 +272,7 @@ async function testDoubleClickLimitExceeded(month:string) {
 }
 // 测试定时上传
 async function testTimeout(month: string) {
-  CounterCollector.init(5000)
+  CounterCollector.init({interval: 5000,baseUrl: CounterCollector.baseURL})
   // 访问前的状态
   const {preItemMetric,preTitleMetric,prePlatformMetric } = await getPreStatus('7038','8695', '1', month)
   // 访问了item1-2-1
@@ -303,7 +304,7 @@ async function testTimeout(month: string) {
 
 // 连续double click 访问item
 async function testTimeoutContinuousDoubleClickItem(month: string) {
-  CounterCollector.init(5000)
+  CounterCollector.init({interval: 5000,baseUrl: CounterCollector.baseURL})
   // 访问前的状态
   const {preItemMetric,preTitleMetric,prePlatformMetric } = await getPreStatus('7038','8695', '1', month)
   const user_id = await CounterCollector.getUserId()
@@ -339,7 +340,7 @@ async function testTimeoutContinuousDoubleClickItem(month: string) {
 
 // 间隔30s以上访问item
 async function testTimeoutNotDoubleClickItem(month: string) {
-  CounterCollector.init(5000)
+  CounterCollector.init({interval: 5000,baseUrl: CounterCollector.baseURL})
   // 访问前的状态
   const {preItemMetric,preTitleMetric,prePlatformMetric } = await getPreStatus('7038','8695', '1', month)
   const user_id = await CounterCollector.getUserId()
@@ -376,7 +377,7 @@ async function testTimeoutNotDoubleClickItem(month: string) {
 
 // 访问，下载，no_license. limit_exceeded各触发一次
 async function testTimeoutAllOptionItem(month: string) {
-  CounterCollector.init(5000)
+  CounterCollector.init({interval: 5000,baseUrl: CounterCollector.baseURL})
   // 访问前的状态
   const {preItemMetric,preTitleMetric,prePlatformMetric } = await getPreStatus('7038','8695', '1', month)
   const user_id = await CounterCollector.getUserId()
@@ -427,7 +428,7 @@ async function testTimeoutAllOptionItem(month: string) {
 
 // 访问一次，下载两次间隔30s以上，no_license double click, limit_exceeded double click两次
 async function testTimeoutComplicateOption(month: string) {
-  CounterCollector.init(5000)
+  CounterCollector.init({interval: 5000,baseUrl: CounterCollector.baseURL})
   // 访问前的状态
   const {preItemMetric,preTitleMetric,prePlatformMetric } = await getPreStatus('7038','8695', '1', month)
   const user_id = await CounterCollector.getUserId()
@@ -485,7 +486,7 @@ async function testTimeoutComplicateOption(month: string) {
 
 // 测试访问两个不同的item
 async function testDifferentInvestigation(month: string) {
-  CounterCollector.init(5000)
+  CounterCollector.init({interval: 5000,baseUrl: CounterCollector.baseURL})
   // 访问前的状态
   const {preItemMetric: preItemMetric1,preTitleMetric,prePlatformMetric } = await getPreStatus('7038','8695', '1', month)
   const {preItemMetric: preItemMetric2} = await getPreStatus('9129','8695', '1', month)
@@ -525,7 +526,7 @@ async function testDifferentInvestigation(month: string) {
 }
 
 async function testCounterScenario(month: string) {
-  CounterCollector.init(5000)
+  CounterCollector.init({baseUrl: CounterCollector.baseURL})
   // 访问前的状态
   const {preItemMetric: preItemMetric1, prePlatformMetric } = await getPreStatus('7861','3971', '2', month)
   const {preItemMetric: preItemMetric2} = await getPreStatus('3742','3971', '2', month)
