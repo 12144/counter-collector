@@ -42,9 +42,9 @@ export default async function Test (_clearTest = false): Promise<any>{
 async function testInvestigation(month: string) {
   CounterCollector.init({baseUrl: CounterCollector.baseURL})
   // 访问前的状态
-  const {preItemMetric,preTitleMetric,prePlatformMetric } = await getPreStatus('7038','8695', '1', month)
+  const {preItemMetric,preTitleMetric,prePlatformMetric } = await getPreStatus('test7038','test8695', 'test1', month)
   // 访问了item1-2-1
-  CounterCollector.collect(await CounterCollector.getUserId(), await CounterCollector.getSessionId(), '7038','8695', '1', MetricType.INVESTIGATION)
+  CounterCollector.collect(await CounterCollector.getUserId(), await CounterCollector.getSessionId(), 'test7038','test8695', 'test1', MetricType.INVESTIGATION)
   
   await CounterCollector.upload()
 
@@ -60,7 +60,7 @@ async function testInvestigation(month: string) {
   prePlatformMetric.unique_title_investigations++
 
   // 访问后的状态
-  const {postItemMetric,postTitleMetric,postPlatformMetric } = await getPostStatus('7038','8695', '1', month)
+  const {postItemMetric,postTitleMetric,postPlatformMetric } = await getPostStatus('test7038','test8695', 'test1', month)
   assert.deepStrictEqual(postItemMetric, preItemMetric)
   assert.deepStrictEqual(postTitleMetric, preTitleMetric)
   assert.deepStrictEqual(postPlatformMetric, prePlatformMetric)
@@ -71,12 +71,12 @@ async function testInvestigation(month: string) {
 async function testUniqueInvestigation(month: string) {
   CounterCollector.init({baseUrl: CounterCollector.baseURL})
   // 访问前的状态
-  const {preItemMetric,preTitleMetric,prePlatformMetric } = await getPreStatus('7038','8695', '1', month)
+  const {preItemMetric,preTitleMetric,prePlatformMetric } = await getPreStatus('test7038','test8695', 'test1', month)
   const user_id = await CounterCollector.getUserId()
   const session_id = await CounterCollector.getSessionId()
   // 访问了item1-2-1
-  CounterCollector.collect(user_id, session_id, '7038','8695', '1', MetricType.INVESTIGATION)
-  CounterCollector.collect(user_id, session_id, '7038','8695', '1', MetricType.INVESTIGATION)
+  CounterCollector.collect(user_id, session_id, 'test7038','test8695', 'test1', MetricType.INVESTIGATION)
+  CounterCollector.collect(user_id, session_id, 'test7038','test8695', 'test1', MetricType.INVESTIGATION)
   
   await CounterCollector.upload()
 
@@ -92,7 +92,7 @@ async function testUniqueInvestigation(month: string) {
   prePlatformMetric.unique_title_investigations++
 
   // 访问后的状态
-  const {postItemMetric,postTitleMetric,postPlatformMetric } = await getPostStatus('7038','8695', '1', month)
+  const {postItemMetric,postTitleMetric,postPlatformMetric } = await getPostStatus('test7038','test8695', 'test1', month)
   assert.deepStrictEqual(postItemMetric, preItemMetric)
   assert.deepStrictEqual(postTitleMetric, preTitleMetric)
   assert.deepStrictEqual(postPlatformMetric, prePlatformMetric)
@@ -103,11 +103,11 @@ async function testUniqueInvestigation(month: string) {
 async function testRequests(month: string) {
   CounterCollector.init({baseUrl: CounterCollector.baseURL})
   // 访问前的状态
-  const {preItemMetric,preTitleMetric,prePlatformMetric } = await getPreStatus('7038','8695', '1', month)
+  const {preItemMetric,preTitleMetric,prePlatformMetric } = await getPreStatus('test7038','test8695', 'test1', month)
   const user_id = await CounterCollector.getUserId()
   const session_id = await CounterCollector.getSessionId()
   // 访问了item1-2-1
-  CounterCollector.collect(user_id, session_id, '7038','8695', '1', MetricType.REQUEST)
+  CounterCollector.collect(user_id, session_id, 'test7038','test8695', 'test1', MetricType.REQUEST)
   await CounterCollector.upload()
 
   preItemMetric.total_item_investigations++
@@ -130,7 +130,7 @@ async function testRequests(month: string) {
   prePlatformMetric.unique_title_requests++
 
   // 访问后的状态
-  const {postItemMetric,postTitleMetric,postPlatformMetric } = await getPostStatus('7038','8695', '1', month)
+  const {postItemMetric,postTitleMetric,postPlatformMetric } = await getPostStatus('test7038','test8695', 'test1', month)
   assert.deepStrictEqual(postItemMetric, preItemMetric)
   assert.deepStrictEqual(postTitleMetric, preTitleMetric)
   assert.deepStrictEqual(postPlatformMetric, prePlatformMetric)
@@ -141,12 +141,12 @@ async function testRequests(month: string) {
 async function testUniqueRequests(month: string) {
   CounterCollector.init({baseUrl: CounterCollector.baseURL})
   // 访问前的状态
-  const {preItemMetric,preTitleMetric,prePlatformMetric } = await getPreStatus('7038','8695', '1', month)
+  const {preItemMetric,preTitleMetric,prePlatformMetric } = await getPreStatus('test7038','test8695', 'test1', month)
   const user_id = await CounterCollector.getUserId()
   const session_id = await CounterCollector.getSessionId()
   // 访问了item1-2-1
-  CounterCollector.collect(user_id, session_id, '7038','8695', '1', MetricType.REQUEST)
-  CounterCollector.collect(user_id, session_id, '7038','8695', '1', MetricType.REQUEST)
+  CounterCollector.collect(user_id, session_id, 'test7038','test8695', 'test1', MetricType.REQUEST)
+  CounterCollector.collect(user_id, session_id, 'test7038','test8695', 'test1', MetricType.REQUEST)
 
   await CounterCollector.upload()
 
@@ -170,7 +170,7 @@ async function testUniqueRequests(month: string) {
   prePlatformMetric.unique_title_requests++
 
   // 访问后的状态
-  const {postItemMetric,postTitleMetric,postPlatformMetric } = await getPostStatus('7038','8695', '1', month)
+  const {postItemMetric,postTitleMetric,postPlatformMetric } = await getPostStatus('test7038','test8695', 'test1', month)
   assert.deepStrictEqual(postItemMetric, preItemMetric)
   assert.deepStrictEqual(postTitleMetric, preTitleMetric)
   assert.deepStrictEqual(postPlatformMetric, prePlatformMetric)
@@ -180,11 +180,11 @@ async function testUniqueRequests(month: string) {
 // 测试no_license platform1 -> title1-2 -> item1-2-1
 async function testNoLicense(month: string) {
   CounterCollector.init({baseUrl: CounterCollector.baseURL})
-  const {preItemMetric,preTitleMetric,prePlatformMetric } = await getPreStatus('7038','8695', '1', month)
+  const {preItemMetric,preTitleMetric,prePlatformMetric } = await getPreStatus('test7038','test8695', 'test1', month)
   const user_id = await CounterCollector.getUserId()
   const session_id = await CounterCollector.getSessionId()
   // 访问了item1-2-1
-  CounterCollector.collect(user_id, session_id, '7038','8695', '1', MetricType.NO_LICENSE)
+  CounterCollector.collect(user_id, session_id, 'test7038','test8695', 'test1', MetricType.NO_LICENSE)
 
   await CounterCollector.upload()
 
@@ -193,7 +193,7 @@ async function testNoLicense(month: string) {
   prePlatformMetric.no_license++
 
   // 访问后的状态
-  const {postItemMetric,postTitleMetric,postPlatformMetric } = await getPostStatus('7038','8695', '1', month)
+  const {postItemMetric,postTitleMetric,postPlatformMetric } = await getPostStatus('test7038','test8695', 'test1', month)
   assert.deepStrictEqual(postItemMetric, preItemMetric)
   assert.deepStrictEqual(postTitleMetric, preTitleMetric)
   assert.deepStrictEqual(postPlatformMetric, prePlatformMetric)
@@ -203,12 +203,12 @@ async function testNoLicense(month: string) {
 // 测试no_license platform1 -> title1-2 -> item1-2-1两次
 async function testDoubleClickNoLicense(month:string) {
   CounterCollector.init({baseUrl: CounterCollector.baseURL})
-  const {preItemMetric,preTitleMetric,prePlatformMetric } = await getPreStatus('7038','8695', '1', month)
+  const {preItemMetric,preTitleMetric,prePlatformMetric } = await getPreStatus('test7038','test8695', 'test1', month)
   const user_id = await CounterCollector.getUserId()
   const session_id = await CounterCollector.getSessionId()
   // 访问了item1-2-1
-  CounterCollector.collect(user_id, session_id, '7038','8695', '1', MetricType.NO_LICENSE)
-  CounterCollector.collect(user_id, session_id, '7038','8695', '1', MetricType.NO_LICENSE)
+  CounterCollector.collect(user_id, session_id, 'test7038','test8695', 'test1', MetricType.NO_LICENSE)
+  CounterCollector.collect(user_id, session_id, 'test7038','test8695', 'test1', MetricType.NO_LICENSE)
 
   await CounterCollector.upload()
 
@@ -217,7 +217,7 @@ async function testDoubleClickNoLicense(month:string) {
   prePlatformMetric.no_license++
 
   // 访问后的状态
-  const {postItemMetric,postTitleMetric,postPlatformMetric } = await getPostStatus('7038','8695', '1', month)
+  const {postItemMetric,postTitleMetric,postPlatformMetric } = await getPostStatus('test7038','test8695', 'test1', month)
   assert.deepStrictEqual(postItemMetric, preItemMetric)
   assert.deepStrictEqual(postTitleMetric, preTitleMetric)
   assert.deepStrictEqual(postPlatformMetric, prePlatformMetric)
@@ -227,11 +227,11 @@ async function testDoubleClickNoLicense(month:string) {
 // 测试limit_exceeded platform1 -> title1-2 -> item1-2-1
 async function testLimitExceeded(month:string) {
   CounterCollector.init({baseUrl: CounterCollector.baseURL})
-  const {preItemMetric,preTitleMetric,prePlatformMetric } = await getPreStatus('7038','8695', '1', month)
+  const {preItemMetric,preTitleMetric,prePlatformMetric } = await getPreStatus('test7038','test8695', 'test1', month)
   const user_id = await CounterCollector.getUserId()
   const session_id = await CounterCollector.getSessionId()
   // 访问了item1-2-1
-  CounterCollector.collect(user_id, session_id, '7038','8695', '1', MetricType.LIMIT_EXCEEDED)
+  CounterCollector.collect(user_id, session_id, 'test7038','test8695', 'test1', MetricType.LIMIT_EXCEEDED)
 
   await CounterCollector.upload()
   
@@ -240,7 +240,7 @@ async function testLimitExceeded(month:string) {
   prePlatformMetric.limit_exceeded++
 
   // 访问后的状态
-  const {postItemMetric,postTitleMetric,postPlatformMetric } = await getPostStatus('7038','8695', '1', month)
+  const {postItemMetric,postTitleMetric,postPlatformMetric } = await getPostStatus('test7038','test8695', 'test1', month)
   assert.deepStrictEqual(postItemMetric, preItemMetric)
   assert.deepStrictEqual(postTitleMetric, preTitleMetric)
   assert.deepStrictEqual(postPlatformMetric, prePlatformMetric)
@@ -250,12 +250,12 @@ async function testLimitExceeded(month:string) {
 // 测试limit_exceeded platform1 -> title1-2 -> item1-2-1两次
 async function testDoubleClickLimitExceeded(month:string) {
   CounterCollector.init({baseUrl: CounterCollector.baseURL})
-  const {preItemMetric,preTitleMetric,prePlatformMetric } = await getPreStatus('7038','8695', '1', month)
+  const {preItemMetric,preTitleMetric,prePlatformMetric } = await getPreStatus('test7038','test8695', 'test1', month)
   const user_id = await CounterCollector.getUserId()
   const session_id = await CounterCollector.getSessionId()
   // 访问了item1-2-1
-  CounterCollector.collect(user_id, session_id, '7038','8695', '1', MetricType.LIMIT_EXCEEDED)
-  CounterCollector.collect(user_id, session_id, '7038','8695', '1', MetricType.LIMIT_EXCEEDED)
+  CounterCollector.collect(user_id, session_id, 'test7038','test8695', 'test1', MetricType.LIMIT_EXCEEDED)
+  CounterCollector.collect(user_id, session_id, 'test7038','test8695', 'test1', MetricType.LIMIT_EXCEEDED)
 
   await CounterCollector.upload()
   
@@ -264,7 +264,7 @@ async function testDoubleClickLimitExceeded(month:string) {
   prePlatformMetric.limit_exceeded++
 
   // 访问后的状态
-  const {postItemMetric,postTitleMetric,postPlatformMetric } = await getPostStatus('7038','8695', '1', month)
+  const {postItemMetric,postTitleMetric,postPlatformMetric } = await getPostStatus('test7038','test8695', 'test1', month)
   assert.deepStrictEqual(postItemMetric, preItemMetric)
   assert.deepStrictEqual(postTitleMetric, preTitleMetric)
   assert.deepStrictEqual(postPlatformMetric, prePlatformMetric)
@@ -274,9 +274,9 @@ async function testDoubleClickLimitExceeded(month:string) {
 async function testTimeout(month: string) {
   CounterCollector.init({interval: 5000,baseUrl: CounterCollector.baseURL})
   // 访问前的状态
-  const {preItemMetric,preTitleMetric,prePlatformMetric } = await getPreStatus('7038','8695', '1', month)
+  const {preItemMetric,preTitleMetric,prePlatformMetric } = await getPreStatus('test7038','test8695', 'test1', month)
   // 访问了item1-2-1
-  CounterCollector.collect(await CounterCollector.getUserId(), await CounterCollector.getSessionId(), '7038','8695', '1', MetricType.INVESTIGATION)
+  CounterCollector.collect(await CounterCollector.getUserId(), await CounterCollector.getSessionId(), 'test7038','test8695', 'test1', MetricType.INVESTIGATION)
 
   preItemMetric.total_item_investigations++
   preItemMetric.unique_item_investigations++
@@ -292,7 +292,7 @@ async function testTimeout(month: string) {
   return new Promise((resolve) => {
     setTimeout(async function(){
       // 访问后的状态
-      const {postItemMetric,postTitleMetric,postPlatformMetric } = await getPostStatus('7038','8695', '1', month)
+      const {postItemMetric,postTitleMetric,postPlatformMetric } = await getPostStatus('test7038','test8695', 'test1', month)
       assert.deepStrictEqual(postItemMetric, preItemMetric)
       assert.deepStrictEqual(postTitleMetric, preTitleMetric)
       assert.deepStrictEqual(postPlatformMetric, prePlatformMetric)
@@ -306,13 +306,13 @@ async function testTimeout(month: string) {
 async function testTimeoutContinuousDoubleClickItem(month: string) {
   CounterCollector.init({interval: 5000,baseUrl: CounterCollector.baseURL})
   // 访问前的状态
-  const {preItemMetric,preTitleMetric,prePlatformMetric } = await getPreStatus('7038','8695', '1', month)
+  const {preItemMetric,preTitleMetric,prePlatformMetric } = await getPreStatus('test7038','test8695', 'test1', month)
   const user_id = await CounterCollector.getUserId()
   const session_id = await CounterCollector.getSessionId()
   // 短时间内连续访问3次item1-2-1， 应只记录一次
-  CounterCollector.collect(user_id, session_id, '7038','8695', '1', MetricType.INVESTIGATION)
-  CounterCollector.collect(user_id, session_id, '7038','8695', '1', MetricType.INVESTIGATION)
-  CounterCollector.collect(user_id, session_id, '7038','8695', '1', MetricType.INVESTIGATION)
+  CounterCollector.collect(user_id, session_id, 'test7038','test8695', 'test1', MetricType.INVESTIGATION)
+  CounterCollector.collect(user_id, session_id, 'test7038','test8695', 'test1', MetricType.INVESTIGATION)
+  CounterCollector.collect(user_id, session_id, 'test7038','test8695', 'test1', MetricType.INVESTIGATION)
 
   preItemMetric.total_item_investigations++
   preItemMetric.unique_item_investigations++
@@ -328,7 +328,7 @@ async function testTimeoutContinuousDoubleClickItem(month: string) {
   return new Promise((resolve) => {
     setTimeout(async function(){
       // 访问后的状态
-      const {postItemMetric,postTitleMetric,postPlatformMetric } = await getPostStatus('7038','8695', '1', month)
+      const {postItemMetric,postTitleMetric,postPlatformMetric } = await getPostStatus('test7038','test8695', 'test1', month)
       assert.deepStrictEqual(postItemMetric, preItemMetric)
       assert.deepStrictEqual(postTitleMetric, preTitleMetric)
       assert.deepStrictEqual(postPlatformMetric, prePlatformMetric)
@@ -342,11 +342,11 @@ async function testTimeoutContinuousDoubleClickItem(month: string) {
 async function testTimeoutNotDoubleClickItem(month: string) {
   CounterCollector.init({interval: 5000,baseUrl: CounterCollector.baseURL})
   // 访问前的状态
-  const {preItemMetric,preTitleMetric,prePlatformMetric } = await getPreStatus('7038','8695', '1', month)
+  const {preItemMetric,preTitleMetric,prePlatformMetric } = await getPreStatus('test7038','test8695', 'test1', month)
   const user_id = await CounterCollector.getUserId()
   const session_id = await CounterCollector.getSessionId()
   // 间隔30s以上访问2次item1-2-1， 应记录两次
-  CounterCollector.collect(user_id, session_id, '7038','8695', '1', MetricType.INVESTIGATION)
+  CounterCollector.collect(user_id, session_id, 'test7038','test8695', 'test1', MetricType.INVESTIGATION)
 
   preItemMetric.total_item_investigations = preItemMetric.total_item_investigations + 2
   preItemMetric.unique_item_investigations++
@@ -361,10 +361,10 @@ async function testTimeoutNotDoubleClickItem(month: string) {
       
   return new Promise((resolve) => {
     setTimeout(() => {
-      CounterCollector.collect(user_id, session_id, '7038','8695', '1', MetricType.INVESTIGATION)    
+      CounterCollector.collect(user_id, session_id, 'test7038','test8695', 'test1', MetricType.INVESTIGATION)    
       setTimeout(async function(){
         // 访问后的状态
-        const {postItemMetric,postTitleMetric,postPlatformMetric } = await getPostStatus('7038','8695', '1', month)
+        const {postItemMetric,postTitleMetric,postPlatformMetric } = await getPostStatus('test7038','test8695', 'test1', month)
         assert.deepStrictEqual(postItemMetric, preItemMetric)
         assert.deepStrictEqual(postTitleMetric, preTitleMetric)
         assert.deepStrictEqual(postPlatformMetric, prePlatformMetric)
@@ -379,14 +379,14 @@ async function testTimeoutNotDoubleClickItem(month: string) {
 async function testTimeoutAllOptionItem(month: string) {
   CounterCollector.init({interval: 5000,baseUrl: CounterCollector.baseURL})
   // 访问前的状态
-  const {preItemMetric,preTitleMetric,prePlatformMetric } = await getPreStatus('7038','8695', '1', month)
+  const {preItemMetric,preTitleMetric,prePlatformMetric } = await getPreStatus('test7038','test8695', 'test1', month)
   const user_id = await CounterCollector.getUserId()
   const session_id = await CounterCollector.getSessionId()
   // 访问，下载，no_license. limit_exceeded各触发一次
-  CounterCollector.collect(user_id, session_id, '7038','8695', '1', MetricType.INVESTIGATION)
-  CounterCollector.collect(user_id, session_id, '7038','8695', '1', MetricType.REQUEST)
-  CounterCollector.collect(user_id, session_id, '7038','8695', '1', MetricType.NO_LICENSE)
-  CounterCollector.collect(user_id, session_id, '7038','8695', '1', MetricType.LIMIT_EXCEEDED)
+  CounterCollector.collect(user_id, session_id, 'test7038','test8695', 'test1', MetricType.INVESTIGATION)
+  CounterCollector.collect(user_id, session_id, 'test7038','test8695', 'test1', MetricType.REQUEST)
+  CounterCollector.collect(user_id, session_id, 'test7038','test8695', 'test1', MetricType.NO_LICENSE)
+  CounterCollector.collect(user_id, session_id, 'test7038','test8695', 'test1', MetricType.LIMIT_EXCEEDED)
 
   preItemMetric.total_item_investigations = preItemMetric.total_item_investigations + 2
   preItemMetric.total_item_requests++
@@ -416,7 +416,7 @@ async function testTimeoutAllOptionItem(month: string) {
   return new Promise((resolve) => {
     setTimeout(async function(){
       // 访问后的状态
-      const {postItemMetric,postTitleMetric,postPlatformMetric } = await getPostStatus('7038','8695', '1', month)
+      const {postItemMetric,postTitleMetric,postPlatformMetric } = await getPostStatus('test7038','test8695', 'test1', month)
       assert.deepStrictEqual(postItemMetric, preItemMetric)
       assert.deepStrictEqual(postTitleMetric, preTitleMetric)
       assert.deepStrictEqual(postPlatformMetric, prePlatformMetric)
@@ -430,21 +430,21 @@ async function testTimeoutAllOptionItem(month: string) {
 async function testTimeoutComplicateOption(month: string) {
   CounterCollector.init({interval: 5000,baseUrl: CounterCollector.baseURL})
   // 访问前的状态
-  const {preItemMetric,preTitleMetric,prePlatformMetric } = await getPreStatus('7038','8695', '1', month)
+  const {preItemMetric,preTitleMetric,prePlatformMetric } = await getPreStatus('test7038','test8695', 'test1', month)
   const user_id = await CounterCollector.getUserId()
   const session_id = await CounterCollector.getSessionId()
   // 访问一次，下载两次间隔30s以上，no_license double click. limit_exceeded double click两次
-  CounterCollector.collect(user_id, session_id, '7038','8695', '1', MetricType.INVESTIGATION)
-  CounterCollector.collect(user_id, session_id, '7038','8695', '1', MetricType.REQUEST)
+  CounterCollector.collect(user_id, session_id, 'test7038','test8695', 'test1', MetricType.INVESTIGATION)
+  CounterCollector.collect(user_id, session_id, 'test7038','test8695', 'test1', MetricType.REQUEST)
   setTimeout(() =>{
-    CounterCollector.collect(user_id, session_id, '7038','8695', '1', MetricType.REQUEST)
+    CounterCollector.collect(user_id, session_id, 'test7038','test8695', 'test1', MetricType.REQUEST)
   }, LongerDoubleClickInternal)
-  CounterCollector.collect(user_id, session_id, '7038','8695', '1', MetricType.NO_LICENSE)
-  CounterCollector.collect(user_id, session_id, '7038','8695', '1', MetricType.NO_LICENSE)
+  CounterCollector.collect(user_id, session_id, 'test7038','test8695', 'test1', MetricType.NO_LICENSE)
+  CounterCollector.collect(user_id, session_id, 'test7038','test8695', 'test1', MetricType.NO_LICENSE)
 
-  CounterCollector.collect(user_id, session_id, '7038','8695', '1', MetricType.LIMIT_EXCEEDED)
-  CounterCollector.collect(user_id, session_id, '7038','8695', '1', MetricType.LIMIT_EXCEEDED)
-  CounterCollector.collect(user_id, session_id, '7038','8695', '1', MetricType.LIMIT_EXCEEDED)
+  CounterCollector.collect(user_id, session_id, 'test7038','test8695', 'test1', MetricType.LIMIT_EXCEEDED)
+  CounterCollector.collect(user_id, session_id, 'test7038','test8695', 'test1', MetricType.LIMIT_EXCEEDED)
+  CounterCollector.collect(user_id, session_id, 'test7038','test8695', 'test1', MetricType.LIMIT_EXCEEDED)
 
   preItemMetric.total_item_investigations = preItemMetric.total_item_investigations + 3
   preItemMetric.total_item_requests = preItemMetric.total_item_requests + 2
@@ -474,7 +474,7 @@ async function testTimeoutComplicateOption(month: string) {
   return new Promise((resolve) => {
     setTimeout(async function(){
       // 访问后的状态
-      const {postItemMetric,postTitleMetric,postPlatformMetric } = await getPostStatus('7038','8695', '1', month)
+      const {postItemMetric,postTitleMetric,postPlatformMetric } = await getPostStatus('test7038','test8695', 'test1', month)
       assert.deepStrictEqual(postItemMetric, preItemMetric)
       assert.deepStrictEqual(postTitleMetric, preTitleMetric)
       assert.deepStrictEqual(postPlatformMetric, prePlatformMetric)
@@ -488,14 +488,14 @@ async function testTimeoutComplicateOption(month: string) {
 async function testDifferentInvestigation(month: string) {
   CounterCollector.init({interval: 5000,baseUrl: CounterCollector.baseURL})
   // 访问前的状态
-  const {preItemMetric: preItemMetric1,preTitleMetric,prePlatformMetric } = await getPreStatus('7038','8695', '1', month)
-  const {preItemMetric: preItemMetric2} = await getPreStatus('9129','8695', '1', month)
+  const {preItemMetric: preItemMetric1,preTitleMetric,prePlatformMetric } = await getPreStatus('test7038','test8695', 'test1', month)
+  const {preItemMetric: preItemMetric2} = await getPreStatus('test9129','test8695', 'test1', month)
   
   const user_id = await CounterCollector.getUserId()
   const session_id = await CounterCollector.getSessionId()
   // 访问了item1-2-1和item-1-2-2
-  CounterCollector.collect(user_id, session_id, '7038','8695', '1', MetricType.INVESTIGATION)
-  CounterCollector.collect(user_id, session_id, '9129','8695', '1', MetricType.INVESTIGATION)
+  CounterCollector.collect(user_id, session_id, 'test7038','test8695', 'test1', MetricType.INVESTIGATION)
+  CounterCollector.collect(user_id, session_id, 'test9129','test8695', 'test1', MetricType.INVESTIGATION)
   
   preItemMetric1.total_item_investigations++
   preItemMetric1.unique_item_investigations++
@@ -513,8 +513,8 @@ async function testDifferentInvestigation(month: string) {
   return new Promise((resolve) => {
     setTimeout(async () => {
     // 访问后的状态
-      const {postItemMetric: postItemMetric1, postTitleMetric,postPlatformMetric } = await getPostStatus('7038','8695', '1', month)
-      const {postItemMetric: postItemMetric2} = await getPostStatus('9129','8695', '1', month)
+      const {postItemMetric: postItemMetric1, postTitleMetric,postPlatformMetric } = await getPostStatus('test7038','test8695', 'test1', month)
+      const {postItemMetric: postItemMetric2} = await getPostStatus('test9129','test8695', 'test1', month)
       assert.deepStrictEqual(postItemMetric1, preItemMetric1)
       assert.deepStrictEqual(postItemMetric2, preItemMetric2)
       assert.deepStrictEqual(postTitleMetric, preTitleMetric)
@@ -528,22 +528,22 @@ async function testDifferentInvestigation(month: string) {
 async function testCounterScenario(month: string) {
   CounterCollector.init({baseUrl: CounterCollector.baseURL})
   // 访问前的状态
-  const {preItemMetric: preItemMetric1, prePlatformMetric } = await getPreStatus('7861','3971', '2', month)
-  const {preItemMetric: preItemMetric2} = await getPreStatus('3742','3971', '2', month)
-  const {preItemMetric: preItemMetric3} = await getPreStatus('3058','7089', '2', month)
-  const {preItemMetric: preItemMetric4} = await getPreStatus('3456','5647', '2', month)
+  const {preItemMetric: preItemMetric1, prePlatformMetric } = await getPreStatus('test7861','test3971', 'test2', month)
+  const {preItemMetric: preItemMetric2} = await getPreStatus('test3742','test3971', 'test2', month)
+  const {preItemMetric: preItemMetric3} = await getPreStatus('test3058','test7089', 'test2', month)
+  const {preItemMetric: preItemMetric4} = await getPreStatus('test3456','test5647', 'test2', month)
   
   
   const user_id = await CounterCollector.getUserId()
   const session_id = await CounterCollector.getSessionId()
 
   // 访问3个文章摘要（2个是属于同一日志），一个视频，下载之前两篇文章的pdf（属于同一日志），案例来自Release_5_TechNotes_PDFX_20190509-Revised
-  CounterCollector.collect(user_id, session_id, '7861','3971', '2', MetricType.INVESTIGATION)
-  CounterCollector.collect(user_id, session_id, '3742','3971', '2', MetricType.INVESTIGATION)
-  CounterCollector.collect(user_id, session_id, '3058','7089', '2', MetricType.INVESTIGATION)
-  CounterCollector.collect(user_id, session_id, '3456','5647', '2', MetricType.INVESTIGATION)
-  CounterCollector.collect(user_id, session_id, '7861','3971', '2', MetricType.REQUEST)
-  CounterCollector.collect(user_id, session_id, '3742','3971', '2', MetricType.REQUEST)
+  CounterCollector.collect(user_id, session_id, 'test7861','test3971', 'test2', MetricType.INVESTIGATION)
+  CounterCollector.collect(user_id, session_id, 'test3742','test3971', 'test2', MetricType.INVESTIGATION)
+  CounterCollector.collect(user_id, session_id, 'test3058','test7089', 'test2', MetricType.INVESTIGATION)
+  CounterCollector.collect(user_id, session_id, 'test3456','test5647', 'test2', MetricType.INVESTIGATION)
+  CounterCollector.collect(user_id, session_id, 'test7861','test3971', 'test2', MetricType.REQUEST)
+  CounterCollector.collect(user_id, session_id, 'test3742','test3971', 'test2', MetricType.REQUEST)
 
   prePlatformMetric.total_item_investigations = prePlatformMetric.total_item_investigations + 6
   prePlatformMetric.unique_item_investigations = prePlatformMetric.unique_item_investigations + 4
@@ -554,7 +554,7 @@ async function testCounterScenario(month: string) {
 
   return new Promise((resolve) => {
     setTimeout(async function(){
-      const {postPlatformMetric } = await getPostStatus('7861','3971', '2', month)
+      const {postPlatformMetric } = await getPostStatus('test7861','test3971', 'test2', month)
 
       assert.deepStrictEqual(postPlatformMetric, prePlatformMetric)
       console.log('测试访问3个文章摘要（2个是属于同一日志），一个视频，下载之前两篇文章的pdf（属于同一日志）通过')
