@@ -7,7 +7,7 @@
  */
 import CounterStorage,  {Config, UploadData } from "./CounterStorage"
 import { uploadData, getUserIP } from "./request/index"
-import Test from "./counterTest/index"
+import Test, {defaultTestCase} from "./counterTest/index"
 
 const counterStorage = Symbol("counterStorage")
 const counterInterval = Symbol("counterInterval")
@@ -69,8 +69,8 @@ export default class CounterCollector {
    * @param platform_id 平台标识符
    * @param metric_type 指标类型可选值见枚举类型MetricType
    */
-    static collect(user_id: string, session_id:string, item_id: string, title_id:string, platform_id: string, metric_type: MetricType): void {
-      this[counterStorage].insert(user_id, session_id, item_id, title_id, platform_id, metric_type)
+    static collect(user_id: string, session_id:string, item_id: string, title_id:string, platform_id: string, database_id: string, metric_type: MetricType): void {
+      this[counterStorage].insert(user_id, session_id, item_id, title_id, platform_id, database_id, metric_type)
     }
 
     static upload(): Promise<any>{
@@ -92,9 +92,9 @@ export default class CounterCollector {
     }
 
     // 测试用例
-    static async test(clearTest = false): Promise<void> {
+    static async test(testCases: Array<(month: string)=> Promise<any>> = defaultTestCase, clearTest = false): Promise<void> {
       Config.DoubleClickInternal = 3000
-      await Test(clearTest)
+      await Test(testCases, clearTest)
       Config.DoubleClickInternal = 30000
     }
 }

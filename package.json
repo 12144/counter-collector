@@ -1,6 +1,6 @@
 {
   "name": "counter-collector",
-  "version": "0.0.84",
+  "version": "0.0.90",
   "description": "Counter标准前端埋点数据采集sdk",
   "main": "./dist/index.js",
   "scripts": {

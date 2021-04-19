@@ -69,10 +69,22 @@ interface PlatformMapValue {
   unique_title_investigations: number;
 }
 
+interface DatabaseMapValue {
+  unique_item_requests: number; 
+  total_item_requests: number; 
+  unique_item_investigations: number;
+  total_item_investigations: number;
+  no_license: number;
+  limit_exceeded: number;
+  unique_title_requests: number;
+  unique_title_investigations: number;
+}
+
 export interface UploadData {
   item_id?: string,
   title_id?: string;
   platform_id?:string;
+  database_id?: string;
   unique_item_requests: number; 
   total_item_requests: number; 
   unique_item_investigations: number;
@@ -92,11 +104,13 @@ export default class CounterStorage {
     itemMap: Map<string,ItemMapValue>;
     titleMap: Map<string, TitleMapValue>;
     platformMap: Map<string, PlatformMapValue>;
+    databaseMap: Map<string, DatabaseMapValue>;
 
     constructor() {
       this.itemMap = new Map()
       this.titleMap = new Map()
       this.platformMap = new Map()
+      this.databaseMap = new Map()
     }
 
     generateKey(user_id: string, session_id: string): string{
@@ -106,29 +120,32 @@ export default class CounterStorage {
       })
     }
     
-    insert(user_id: string, session_id: string, item_id: string, title_id: string, platform_id:string, metricType: MetricType):void {
+    insert(user_id: string, session_id: string, item_id: string, title_id: string, platform_id:string, database_id: string, metricType: MetricType):void {
       const itemMap = this.itemMap
       const titleMap = this.titleMap
       const platformMap = this.platformMap
+      const databaseMap = this.databaseMap
       const key = this.generateKey(user_id,session_id)
 
       const itemRecord: ItemMapValue = this.getItemRecord(item_id, title_id);
       const titleRecord: TitleMapValue = this.getTitleRecord(title_id)
       const platformRecord: PlatformMapValue = this.getPlatformRecord(platform_id)
+      const databaseRecord: DatabaseMapValue = this.getDatabaseRecord(database_id)
 
       if(metricType === MetricType.REQUEST) {
-        this.dealRequest(itemRecord, titleRecord, platformRecord, key)
+        this.dealRequest(itemRecord, titleRecord, platformRecord, databaseRecord, key)
       }else if(metricType === MetricType.INVESTIGATION) {
-        this.dealInvestigation(itemRecord, titleRecord, platformRecord, key)
+        this.dealInvestigation(itemRecord, titleRecord, platformRecord, databaseRecord, key)
       }else if(metricType === MetricType.NO_LICENSE) {
-        this.dealNoLicense(itemRecord, titleRecord, platformRecord, key)
+        this.dealNoLicense(itemRecord, titleRecord, platformRecord, databaseRecord, key)
       }else if(metricType === MetricType.LIMIT_EXCEEDED) {
-        this.dealLimitExceeded(itemRecord, titleRecord, platformRecord, key)
+        this.dealLimitExceeded(itemRecord, titleRecord, platformRecord, databaseRecord, key)
       }
       
       itemMap.set(item_id, itemRecord)
       titleMap.set(title_id, titleRecord)
       platformMap.set(platform_id, platformRecord)
+      databaseMap.set(database_id, databaseRecord)
     }
 
     getItemRecord(item_id: string, title_id: string): ItemMapValue{
@@ -182,7 +199,20 @@ export default class CounterStorage {
       }
     }
 
-    dealRequest(itemRecord: ItemMapValue, titleRecord: TitleMapValue, platformRecord: PlatformMapValue, key: string):void {
+    getDatabaseRecord(database_id: string): DatabaseMapValue {
+      return this.databaseMap.get(database_id) || {
+        unique_item_requests: 0, 
+        total_item_requests: 0, 
+        unique_item_investigations: 0,
+        total_item_investigations: 0,
+        no_license: 0,
+        limit_exceeded: 0,
+        unique_title_requests: 0,
+        unique_title_investigations: 0,
+      }
+    }
+
+    dealRequest(itemRecord: ItemMapValue, titleRecord: TitleMapValue, platformRecord: PlatformMapValue, databaseRecord: DatabaseMapValue, key: string):void {
       const now = new Date().getTime();
       const last_time = itemRecord.map.requests.get(key)
       let ignoreLastTime = false
@@ -193,27 +223,32 @@ export default class CounterStorage {
           itemRecord.total_item_requests++
           titleRecord.total_item_requests++
           platformRecord.total_item_requests++
+          databaseRecord.total_item_requests++
         }
       }else {
         ignoreLastTime = true
         itemRecord.total_item_requests++
         titleRecord.total_item_requests++
         platformRecord.total_item_requests++
+        databaseRecord.total_item_requests++
+
         itemRecord.unique_item_requests++
         titleRecord.unique_item_requests++
         platformRecord.unique_item_requests++
+        databaseRecord.unique_item_requests++
         if(titleRecord.map.requests.has(key) === false){
           titleRecord.unique_title_requests++
           platformRecord.unique_title_requests++
+          databaseRecord.unique_title_requests++
           titleRecord.map.requests.add(key)
         } 
       }
 
       itemRecord.map.requests.set(key, now)
-      this.dealInvestigation(itemRecord, titleRecord, platformRecord, key, ignoreLastTime)
+      this.dealInvestigation(itemRecord, titleRecord, platformRecord, databaseRecord, key, ignoreLastTime)
     }
 
-    dealInvestigation(itemRecord: ItemMapValue, titleRecord: TitleMapValue, platformRecord: PlatformMapValue, key: string, ignoreLastTime?: boolean):void {
+    dealInvestigation(itemRecord: ItemMapValue, titleRecord: TitleMapValue, platformRecord: PlatformMapValue, databaseRecord: DatabaseMapValue, key: string, ignoreLastTime?: boolean):void {
       const now = new Date().getTime()
       const last_time = itemRecord.map.investigations.get(key)
 
@@ -222,24 +257,29 @@ export default class CounterStorage {
           itemRecord.total_item_investigations++
           titleRecord.total_item_investigations++
           platformRecord.total_item_investigations++
+          databaseRecord.total_item_investigations++
         }
       }else {
         itemRecord.total_item_investigations++
         titleRecord.total_item_investigations++
         platformRecord.total_item_investigations++
+        databaseRecord.total_item_investigations++
+
         itemRecord.unique_item_investigations++
         titleRecord.unique_item_investigations++
         platformRecord.unique_item_investigations++
+        databaseRecord.unique_item_investigations++
         if(titleRecord.map.investigations.has(key) === false) {
           titleRecord.unique_title_investigations++
           platformRecord.unique_title_investigations++
+          databaseRecord.unique_title_investigations++
           titleRecord.map.investigations.add(key)
         }
       }
       itemRecord.map.investigations.set(key, now)
     }
 
-    dealNoLicense(itemRecord: ItemMapValue, titleRecord: TitleMapValue, platformRecord: PlatformMapValue, key: string):void {
+    dealNoLicense(itemRecord: ItemMapValue, titleRecord: TitleMapValue, platformRecord: PlatformMapValue,  databaseRecord: DatabaseMapValue, key: string):void {
       const now = new Date().getTime()
       const last_time = itemRecord.map.no_license.get(key)
 
@@ -247,11 +287,12 @@ export default class CounterStorage {
         itemRecord.no_license++
         titleRecord.no_license++
         platformRecord.no_license++
+        databaseRecord.no_license++
       }
       itemRecord.map.no_license.set(key, now)
     }
 
-    dealLimitExceeded(itemRecord: ItemMapValue, titleRecord: TitleMapValue, platformRecord: PlatformMapValue, key: string):void {
+    dealLimitExceeded(itemRecord: ItemMapValue, titleRecord: TitleMapValue, platformRecord: PlatformMapValue,  databaseRecord: DatabaseMapValue, key: string):void {
       const now = new Date().getTime()
       const last_time = itemRecord.map.limit_exceeded.get(key)
 
@@ -259,6 +300,7 @@ export default class CounterStorage {
         itemRecord.limit_exceeded++
         titleRecord.limit_exceeded++
         platformRecord.limit_exceeded++
+        databaseRecord.limit_exceeded++
       }
       itemRecord.map.limit_exceeded.set(key, now)
     }
@@ -284,6 +326,7 @@ export default class CounterStorage {
         value.unique_title_investigations = 0
       })
       this.platformMap.clear()
+      this.databaseMap.clear()
     }
 
     // 清除所有数据
@@ -297,7 +340,7 @@ export default class CounterStorage {
     toArray(): UploadData[]{
       const data: UploadData[] = []
 
-      function isEmpty(value: any) {
+      function isNotEmpty(value: any) {
         return Boolean(
           value.total_item_requests||
           value.unique_item_requests||
@@ -309,7 +352,7 @@ export default class CounterStorage {
           value.limit_exceeded)
       }
       this.itemMap.forEach((value: ItemMapValue, key: string)=>{
-        if(isEmpty(value)){
+        if(isNotEmpty(value)){
           data.push({ 
             item_id: key,
             title_id: value.title_id,
@@ -324,7 +367,7 @@ export default class CounterStorage {
       })
 
       this.titleMap.forEach((value: TitleMapValue, key: string)=>{
-        if(isEmpty(value)){
+        if(isNotEmpty(value)){
           data.push({ 
             title_id: key,
             unique_item_requests: value.unique_item_requests, 
@@ -340,9 +383,25 @@ export default class CounterStorage {
       })
 
       this.platformMap.forEach((value: PlatformMapValue, key:string)=>{
-        if(isEmpty(value)){
+        if(isNotEmpty(value)){
           data.push({
             platform_id:key,
+            unique_item_requests: value.unique_item_requests, 
+            total_item_requests: value.total_item_requests, 
+            unique_item_investigations: value.unique_item_investigations,
+            total_item_investigations: value.total_item_investigations,
+            no_license: value.no_license,
+            limit_exceeded: value.limit_exceeded,
+            unique_title_requests: value.unique_title_requests,
+            unique_title_investigations: value.unique_title_investigations,
+          })
+        }
+      })
+
+      this.databaseMap.forEach((value: DatabaseMapValue, key:string)=>{
+        if(isNotEmpty(value)){
+          data.push({
+            database_id:key,
             unique_item_requests: value.unique_item_requests, 
             total_item_requests: value.total_item_requests, 
             unique_item_investigations: value.unique_item_investigations,
