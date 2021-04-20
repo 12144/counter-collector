@@ -91,7 +91,8 @@ export async function getPrePlatformMetric(platform_id:string, month: string): P
     no_license: 0,
     limit_exceeded: 0,
     unique_title_investigations: 0,
-    unique_title_requests: 0
+    unique_title_requests: 0,
+    searches_platform: 0
   }
 }
 

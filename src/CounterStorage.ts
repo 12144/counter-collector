@@ -67,6 +67,7 @@ interface PlatformMapValue {
   limit_exceeded: number;
   unique_title_requests: number;
   unique_title_investigations: number;
+  searches_platform: number;
 }
 
 interface DatabaseMapValue {
@@ -93,6 +94,7 @@ export interface UploadData {
   limit_exceeded: number;
   unique_title_requests?: number;
   unique_title_investigations?: number;
+  searches_platform?: number;
 }
 
 
@@ -140,12 +142,14 @@ export default class CounterStorage {
         this.dealNoLicense(itemRecord, titleRecord, platformRecord, databaseRecord, key)
       }else if(metricType === MetricType.LIMIT_EXCEEDED) {
         this.dealLimitExceeded(itemRecord, titleRecord, platformRecord, databaseRecord, key)
+      }else if(metricType === MetricType.SEARCHES_PLATFORM) {
+        this.dealSearchesPlatform(platformRecord)
       }
       
-      itemMap.set(item_id, itemRecord)
-      titleMap.set(title_id, titleRecord)
-      platformMap.set(platform_id, platformRecord)
-      databaseMap.set(database_id, databaseRecord)
+      item_id && itemMap.set(item_id, itemRecord)
+      title_id && titleMap.set(title_id, titleRecord)
+      platform_id && platformMap.set(platform_id, platformRecord)
+      database_id && databaseMap.set(database_id, databaseRecord)
     }
 
     getItemRecord(item_id: string, title_id: string): ItemMapValue{
@@ -196,6 +200,7 @@ export default class CounterStorage {
         limit_exceeded: 0,
         unique_title_requests: 0,
         unique_title_investigations: 0,
+        searches_platform: 0
       }
     }
 
@@ -305,6 +310,10 @@ export default class CounterStorage {
       itemRecord.map.limit_exceeded.set(key, now)
     }
 
+    dealSearchesPlatform(platformRecord: PlatformMapValue):void {
+      platformRecord.searches_platform++
+    }
+
     // 只清理指标数据，保留记录unique指标的map，如果直接清理所有数据，那么同一session内的unique行为会被重复计数
     clear():void {
       this.itemMap.forEach((value, key)=>{
@@ -349,7 +358,9 @@ export default class CounterStorage {
           value.unique_title_requests||
           value.unique_title_investigations||
           value.no_license ||
-          value.limit_exceeded)
+          value.limit_exceeded ||
+          value.searches_platform
+        )
       }
       this.itemMap.forEach((value: ItemMapValue, key: string)=>{
         if(isNotEmpty(value)){
@@ -394,6 +405,7 @@ export default class CounterStorage {
             limit_exceeded: value.limit_exceeded,
             unique_title_requests: value.unique_title_requests,
             unique_title_investigations: value.unique_title_investigations,
+            searches_platform: value.searches_platform
           })
         }
       })

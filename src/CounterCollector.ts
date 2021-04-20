@@ -16,7 +16,8 @@ export enum MetricType {
   REQUEST = 'request',
   INVESTIGATION = 'investigation',
   NO_LICENSE = 'no_license',
-  LIMIT_EXCEEDED = 'limit_exceeded'
+  LIMIT_EXCEEDED = 'limit_exceeded',
+  SEARCHES_PLATFORM = 'searches_platform'
 }
 
 export default class CounterCollector {
@@ -81,7 +82,7 @@ export default class CounterCollector {
           uploadData(data).then(res => {
           // 上传成功后清空本地存储
             this[counterStorage].clear()
-            resolve('success')
+            resolve(data)
           }).catch(err => {
             reject(err)
           })

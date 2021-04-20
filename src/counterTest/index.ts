@@ -27,6 +27,8 @@ export const TestCase = {
   testTimeoutComplicateOption,
   testDifferentInvestigation,
   testCounterScenario,
+
+  testSearchesPlatform
 }
 
 export const defaultTestCase = [
@@ -46,6 +48,8 @@ export const defaultTestCase = [
   TestCase.testTimeoutComplicateOption,
   TestCase.testDifferentInvestigation,
   TestCase.testCounterScenario,
+
+  TestCase.testSearchesPlatform
 ]
 
 export default async function Test (testCases: Array<(month: string)=> Promise<any>>, _clearTest = false): Promise<any>{  
@@ -625,7 +629,7 @@ async function testDifferentInvestigation(month: string): Promise<any> {
 }
 
 async function testCounterScenario(month: string): Promise<any> {
-  CounterCollector.init({baseUrl: CounterCollector.baseURL})
+  CounterCollector.init({interval: 5000,baseUrl: CounterCollector.baseURL})
   // 访问前的状态
   const {preItemMetric: preItemMetric1, prePlatformMetric, preDatabaseMetric } = await getPreStatus('test7861','test3971', 'test2', 'database1', month)
   // const {preItemMetric: preItemMetric2} = await getPreStatus('test3742','', '','', month)
@@ -670,4 +674,24 @@ async function testCounterScenario(month: string): Promise<any> {
   })
 }
 
+async function testSearchesPlatform(month: string): Promise<any> {
+  CounterCollector.init({interval: 5000,baseUrl: CounterCollector.baseURL})
+  // 访问前的状态
+  const { prePlatformMetric } = await getPreStatus('','', 'test1', '', month)
 
+  const user_id = await CounterCollector.getUserId()
+  const session_id = await CounterCollector.getSessionId()
+  CounterCollector.collect(user_id, session_id, '','', 'test1', '', MetricType.SEARCHES_PLATFORM)
+
+  prePlatformMetric.searches_platform++
+
+  return new Promise((resolve) => {
+    setTimeout(async function(){
+      const {postPlatformMetric } = await getPostStatus('','', 'test1', '', month)
+
+      assert.deepStrictEqual(postPlatformMetric, prePlatformMetric)
+      console.log('测试平台搜索成功')
+      resolve('ok')
+    }, UploadInterval)
+  })
+}
