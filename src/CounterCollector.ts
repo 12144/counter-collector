@@ -17,7 +17,10 @@ export enum MetricType {
   INVESTIGATION = 'investigation',
   NO_LICENSE = 'no_license',
   LIMIT_EXCEEDED = 'limit_exceeded',
-  SEARCHES_PLATFORM = 'searches_platform'
+  SEARCHES_PLATFORM = 'searches_platform',
+  SEARCHES_REGULAR = 'searches_regular',
+  SEARCHES_AUTOMATED = 'searches_automated',
+  SEARCHES_FEDERATED = 'searches_federated'
 }
 
 export default class CounterCollector {

@@ -128,7 +128,10 @@ export async function getPreDatabaseMetric(database_id:string, month: string): P
     no_license: 0,
     limit_exceeded: 0,
     unique_title_investigations: 0,
-    unique_title_requests: 0
+    unique_title_requests: 0,
+    searches_regular:0,
+    searches_automated:0,
+    searches_federated:0,
   }
 }
 

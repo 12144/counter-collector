@@ -28,7 +28,8 @@ export const TestCase = {
   testDifferentInvestigation,
   testCounterScenario,
 
-  testSearchesPlatform
+  testSearchesPlatform,
+  testSearchesDatabase
 }
 
 export const defaultTestCase = [
@@ -49,7 +50,8 @@ export const defaultTestCase = [
   TestCase.testDifferentInvestigation,
   TestCase.testCounterScenario,
 
-  TestCase.testSearchesPlatform
+  TestCase.testSearchesPlatform,
+  TestCase.testSearchesDatabase
 ]
 
 export default async function Test (testCases: Array<(month: string)=> Promise<any>>, _clearTest = false): Promise<any>{  
@@ -691,6 +693,32 @@ async function testSearchesPlatform(month: string): Promise<any> {
 
       assert.deepStrictEqual(postPlatformMetric, prePlatformMetric)
       console.log('测试平台搜索成功')
+      resolve('ok')
+    }, UploadInterval)
+  })
+}
+
+async function testSearchesDatabase(month:string): Promise<any> {
+  CounterCollector.init({interval: 5000,baseUrl: CounterCollector.baseURL})
+  // 访问前的状态
+  const { preDatabaseMetric } = await getPreStatus('','', '', 'database1', month)
+
+  const user_id = await CounterCollector.getUserId()
+  const session_id = await CounterCollector.getSessionId()
+  CounterCollector.collect(user_id, session_id, '','', '', 'database1', MetricType.SEARCHES_REGULAR)
+  CounterCollector.collect(user_id, session_id, '','', '', 'database1', MetricType.SEARCHES_AUTOMATED)
+  CounterCollector.collect(user_id, session_id, '','', '', 'database1', MetricType.SEARCHES_FEDERATED)
+
+  preDatabaseMetric.searches_regular++
+  preDatabaseMetric.searches_automated++
+  preDatabaseMetric.searches_federated++
+
+  return new Promise((resolve) => {
+    setTimeout(async function(){
+      const {postDatabaseMetric } = await getPostStatus('','', '', 'database1', month)
+
+      assert.deepStrictEqual(postDatabaseMetric, preDatabaseMetric)
+      console.log('测试数据库搜索指标成功')
       resolve('ok')
     }, UploadInterval)
   })

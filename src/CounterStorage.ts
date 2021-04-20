@@ -79,6 +79,9 @@ interface DatabaseMapValue {
   limit_exceeded: number;
   unique_title_requests: number;
   unique_title_investigations: number;
+  searches_regular: number;
+  searches_automated: number;
+  searches_federated: number;
 }
 
 export interface UploadData {
@@ -95,6 +98,9 @@ export interface UploadData {
   unique_title_requests?: number;
   unique_title_investigations?: number;
   searches_platform?: number;
+  searches_regular?: number;
+  searches_automated?: number;
+  searches_federated?: number;
 }
 
 
@@ -144,6 +150,12 @@ export default class CounterStorage {
         this.dealLimitExceeded(itemRecord, titleRecord, platformRecord, databaseRecord, key)
       }else if(metricType === MetricType.SEARCHES_PLATFORM) {
         this.dealSearchesPlatform(platformRecord)
+      }else if(metricType === MetricType.SEARCHES_REGULAR){
+        this.dealSearchesRegular(databaseRecord)
+      }else if(metricType === MetricType.SEARCHES_AUTOMATED){
+        this.dealSearchesAutomated(databaseRecord)
+      }else if(metricType === MetricType.SEARCHES_FEDERATED){
+        this.dealSearchesFederated(databaseRecord)
       }
       
       item_id && itemMap.set(item_id, itemRecord)
@@ -214,6 +226,9 @@ export default class CounterStorage {
         limit_exceeded: 0,
         unique_title_requests: 0,
         unique_title_investigations: 0,
+        searches_regular: 0,
+        searches_automated: 0,
+        searches_federated: 0
       }
     }
 
@@ -314,6 +329,18 @@ export default class CounterStorage {
       platformRecord.searches_platform++
     }
 
+    dealSearchesRegular(databaseRecord: DatabaseMapValue):void {
+      databaseRecord.searches_regular++
+    }
+
+    dealSearchesAutomated(databaseRecord: DatabaseMapValue):void {
+      databaseRecord.searches_automated++
+    }
+
+    dealSearchesFederated(databaseRecord: DatabaseMapValue):void {
+      databaseRecord.searches_federated++
+    }
+
     // 只清理指标数据，保留记录unique指标的map，如果直接清理所有数据，那么同一session内的unique行为会被重复计数
     clear():void {
       this.itemMap.forEach((value, key)=>{
@@ -359,7 +386,10 @@ export default class CounterStorage {
           value.unique_title_investigations||
           value.no_license ||
           value.limit_exceeded ||
-          value.searches_platform
+          value.searches_platform ||
+          value.searches_regular ||
+          value.searches_automated ||
+          value.searches_federated
         )
       }
       this.itemMap.forEach((value: ItemMapValue, key: string)=>{
@@ -422,6 +452,9 @@ export default class CounterStorage {
             limit_exceeded: value.limit_exceeded,
             unique_title_requests: value.unique_title_requests,
             unique_title_investigations: value.unique_title_investigations,
+            searches_regular: value.searches_regular,
+            searches_automated: value.searches_automated,
+            searches_federated: value.searches_federated
           })
         }
       })
