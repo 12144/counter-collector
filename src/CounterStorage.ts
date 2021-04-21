@@ -1,5 +1,6 @@
 // 本地存储
 import {MetricType} from './CounterCollector'
+import {mapToJson, jsonToMap} from './util'
 
 export const Config = { DoubleClickInternal : 30000 }
 
@@ -370,6 +371,7 @@ export default class CounterStorage {
       this.itemMap.clear()
       this.titleMap.clear()
       this.platformMap.clear()
+      this.databaseMap.clear()
     }
 
     // 转换为后端接收的格式
@@ -459,5 +461,38 @@ export default class CounterStorage {
         }
       })
       return data
+    }
+
+    // 将数据存储到localstorage
+    store():void {
+      const now = new Date()
+      const data = {
+        itemMap: mapToJson(this.itemMap),
+        titleMap: mapToJson(this.titleMap),
+        platformMap: mapToJson(this.platformMap),
+        databaseMap: mapToJson(this.databaseMap),
+        time: `${now.getFullYear()}-${now.getMonth()+1}-${now.getDate()}-${now.getHours()}`
+      }
+      
+      localStorage.setItem('collector-data', JSON.stringify(data))
+    }
+
+    // 从localstorage将数据取出，返回true表示需要上传数据，返回false表示不需要上传数据
+    retrive():boolean {
+      const data = JSON.parse(localStorage.getItem('collector-data')!)
+      if(!data){
+        return false
+      }
+
+      this.itemMap = jsonToMap(data.itemMap)
+      this.titleMap = jsonToMap(data.titleMap)
+      this.platformMap = jsonToMap(data.platformMap)
+      this.databaseMap = jsonToMap(data.databaseMap)
+      
+      localStorage.removeItem('collector-data')
+
+      const now = new Date()
+      const time = `${now.getFullYear()}-${now.getMonth()+1}-${now.getDate()}-${now.getHours()}`
+      return time !== data.time
     }
 }

@@ -36,8 +36,22 @@ export default class CounterCollector {
       CounterCollector[counterStorage] = new CounterStorage()
       CounterCollector.baseURL = baseUrl
       CounterCollector[counterInterval] = setInterval(function(){
-        CounterCollector.upload()
+        CounterCollector.upload().then(res => {
+          if(res !== 'empty')
+            CounterCollector[counterStorage].clear()
+        },err => console.error(err))
       }, interval)
+
+      // 返回true说明是在一个新的时段，属于不同的session，需要把之前的数据上传并清空
+      if(CounterCollector[counterStorage].retrive()){
+        this.upload().then(res => {
+          CounterCollector[counterStorage].clearAll()
+        }, err => console.error(err))
+      }
+
+      window.addEventListener('beforeunload', () => {
+        CounterCollector[counterStorage].store()
+      })
     }
 
     static async getUserId(user_id?:string, ip?: string): Promise<string>{
