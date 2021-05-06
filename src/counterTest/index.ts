@@ -1,5 +1,5 @@
 import assert from "assert"
-import CounterCollector, { MetricType } from "../CounterCollector"
+import CounterCollector, { counterStorage, MetricType } from "../CounterCollector"
 import {
   getPreStatus,
   getPostStatus,
@@ -28,7 +28,8 @@ export const TestCase = {
   testDifferentInvestigation,
   testCounterScenario,
 
-  testSearchesDatabase
+  testSearchesDatabase,
+  testClear
 }
 
 export const defaultTestCase = [
@@ -49,7 +50,7 @@ export const defaultTestCase = [
   TestCase.testDifferentInvestigation,
   TestCase.testCounterScenario,
 
-  TestCase.testSearchesDatabase
+  TestCase.testSearchesDatabase,
 ]
 
 export default async function Test (testCases: Array<(month: string)=> Promise<any>>, _clearTest = false): Promise<any>{  
@@ -701,4 +702,21 @@ async function testSearchesDatabase(month:string): Promise<any> {
       resolve('ok')
     }, UploadInterval)
   })
+}
+
+async function testClear(month:string): Promise<any> {
+  CounterCollector.init({interval:5000, baseUrl: CounterCollector.baseURL})
+  const user_id = await CounterCollector.getUserId()
+  const session_id = await CounterCollector.getSessionId()
+
+  CounterCollector.collect(user_id, session_id, 'test7038','test8695', 'test1', 'database1', MetricType.INVESTIGATION)
+  CounterCollector.collect(user_id, session_id+'123', 'test7038','test8695', 'test1', 'database1', MetricType.INVESTIGATION)
+  console.log(CounterCollector[counterStorage])
+  
+  // return new Promise((resolve) => {
+  //   setTimeout(() => {
+  //     console.log(CounterCollector[counterStorage])
+  //     resolve('ok')
+  //   }, 6000)
+  // })
 }

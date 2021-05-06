@@ -9,7 +9,7 @@ import CounterStorage,  {Config, UploadData } from "./CounterStorage"
 import { uploadData, getUserIP } from "./request/index"
 import Test, {defaultTestCase} from "./counterTest/index"
 
-const counterStorage = Symbol("counterStorage")
+export const counterStorage = Symbol("counterStorage")
 const counterInterval = Symbol("counterInterval")
 
 export enum MetricType {
@@ -69,8 +69,10 @@ export default class CounterCollector {
     static async getSessionId(session_id?:string, user_id?: string, cookie_id?:string, ip?:string): Promise<string>{
       if(session_id) return session_id
       const now = new Date()
-      let identifier = user_id || cookie_id || `${ip}|${navigator.userAgent}`
-      if(!identifier){
+      let identifier = ''
+      if(user_id || cookie_id || ip){
+        identifier = user_id || cookie_id || `${ip}|${navigator.userAgent}`
+      }else{
         const result = await getUserIP()
         identifier = `${result.data}|${navigator.userAgent}`
       }

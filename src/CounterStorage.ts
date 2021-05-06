@@ -1,6 +1,6 @@
 // 本地存储
 import {MetricType} from './CounterCollector'
-import {mapToJson, jsonToMap} from './util'
+import {mapToJson, jsonToMap, clearItemMap, clearTitleMap} from './util'
 
 export const Config = { DoubleClickInternal : 30000 }
 
@@ -10,7 +10,7 @@ export const Config = { DoubleClickInternal : 30000 }
  *  map详细描述见下方
 */
 
-interface ItemMapValue {
+export interface ItemMapValue {
   title_id: string;
   unique_item_requests: number; 
   total_item_requests: number; 
@@ -37,7 +37,7 @@ interface ItemMapValue {
   }
 }
 
-interface TitleMapValue {
+export interface TitleMapValue {
   unique_item_requests: number; 
   total_item_requests: number; 
   unique_item_investigations: number;
@@ -114,12 +114,14 @@ export default class CounterStorage {
     titleMap: Map<string, TitleMapValue>;
     platformMap: Map<string, PlatformMapValue>;
     databaseMap: Map<string, DatabaseMapValue>;
+    lastSessionId: string; // 最后一次操作的sessionid，上传后清除其他数据，保留此session内的指标数据重复采集unique指标
 
     constructor() {
       this.itemMap = new Map()
       this.titleMap = new Map()
       this.platformMap = new Map()
       this.databaseMap = new Map()
+      this.lastSessionId = ''
     }
 
     generateKey(user_id: string, session_id: string): string{
@@ -161,6 +163,7 @@ export default class CounterStorage {
       title_id && titleMap.set(title_id, titleRecord)
       platform_id && platformMap.set(platform_id, platformRecord)
       database_id && databaseMap.set(database_id, databaseRecord)
+      this.lastSessionId = session_id
     }
 
     getItemRecord(item_id: string, title_id: string): ItemMapValue{
@@ -340,24 +343,8 @@ export default class CounterStorage {
 
     // 只清理指标数据，保留记录unique指标的map，如果直接清理所有数据，那么同一session内的unique行为会被重复计数
     clear():void {
-      this.itemMap.forEach((value, key)=>{
-        value.unique_item_requests = 0
-        value.total_item_requests = 0
-        value.unique_item_investigations= 0
-        value.total_item_investigations= 0
-        value.no_license= 0
-        value.limit_exceeded= 0
-      })
-      this.titleMap.forEach((value)=>{
-        value.unique_item_requests = 0
-        value.total_item_requests = 0
-        value.unique_item_investigations = 0
-        value.total_item_investigations = 0
-        value.no_license = 0
-        value.limit_exceeded = 0
-        value.unique_title_requests = 0
-        value.unique_title_investigations = 0
-      })
+      clearItemMap(this.itemMap,this.lastSessionId)
+      clearTitleMap(this.titleMap,this.lastSessionId)
       this.platformMap.clear()
       this.databaseMap.clear()
     }
