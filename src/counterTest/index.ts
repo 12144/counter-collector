@@ -28,7 +28,6 @@ export const TestCase = {
   testDifferentInvestigation,
   testCounterScenario,
 
-  testSearchesPlatform,
   testSearchesDatabase
 }
 
@@ -50,7 +49,6 @@ export const defaultTestCase = [
   TestCase.testDifferentInvestigation,
   TestCase.testCounterScenario,
 
-  TestCase.testSearchesPlatform,
   TestCase.testSearchesDatabase
 ]
 
@@ -676,47 +674,28 @@ async function testCounterScenario(month: string): Promise<any> {
   })
 }
 
-async function testSearchesPlatform(month: string): Promise<any> {
-  CounterCollector.init({interval: 5000,baseUrl: CounterCollector.baseURL})
-  // 访问前的状态
-  const { prePlatformMetric } = await getPreStatus('','', 'test1', '', month)
-
-  const user_id = await CounterCollector.getUserId()
-  const session_id = await CounterCollector.getSessionId()
-  CounterCollector.collect(user_id, session_id, '','', 'test1', '', MetricType.SEARCHES_PLATFORM)
-
-  prePlatformMetric.searches_platform++
-
-  return new Promise((resolve) => {
-    setTimeout(async function(){
-      const {postPlatformMetric } = await getPostStatus('','', 'test1', '', month)
-
-      assert.deepStrictEqual(postPlatformMetric, prePlatformMetric)
-      console.log('测试平台搜索成功')
-      resolve('ok')
-    }, UploadInterval)
-  })
-}
-
 async function testSearchesDatabase(month:string): Promise<any> {
   CounterCollector.init({interval: 5000,baseUrl: CounterCollector.baseURL})
   // 访问前的状态
-  const { preDatabaseMetric } = await getPreStatus('','', '', 'database1', month)
+  const { prePlatformMetric, preDatabaseMetric } = await getPreStatus('','', 'test1', 'database1', month)
 
   const user_id = await CounterCollector.getUserId()
   const session_id = await CounterCollector.getSessionId()
-  CounterCollector.collect(user_id, session_id, '','', '', 'database1', MetricType.SEARCHES_REGULAR)
-  CounterCollector.collect(user_id, session_id, '','', '', 'database1', MetricType.SEARCHES_AUTOMATED)
-  CounterCollector.collect(user_id, session_id, '','', '', 'database1', MetricType.SEARCHES_FEDERATED)
+  CounterCollector.collect(user_id, session_id, '','', 'test1', 'database1', MetricType.SEARCHES_REGULAR)
+  CounterCollector.collect(user_id, session_id, '','', 'test1', 'database1', MetricType.SEARCHES_AUTOMATED)
+  CounterCollector.collect(user_id, session_id, '','', 'test1', 'database1', MetricType.SEARCHES_FEDERATED)
 
   preDatabaseMetric.searches_regular++
   preDatabaseMetric.searches_automated++
   preDatabaseMetric.searches_federated++
+  prePlatformMetric.searches_platform = prePlatformMetric.searches_platform + 2 
+
 
   return new Promise((resolve) => {
     setTimeout(async function(){
-      const {postDatabaseMetric } = await getPostStatus('','', '', 'database1', month)
+      const {postPlatformMetric, postDatabaseMetric } = await getPostStatus('','', 'test1', 'database1', month)
 
+      assert.deepStrictEqual(postPlatformMetric, prePlatformMetric)
       assert.deepStrictEqual(postDatabaseMetric, preDatabaseMetric)
       console.log('测试数据库搜索指标成功')
       resolve('ok')

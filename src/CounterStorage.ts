@@ -149,12 +149,10 @@ export default class CounterStorage {
         this.dealNoLicense(itemRecord, titleRecord, platformRecord, databaseRecord, key)
       }else if(metricType === MetricType.LIMIT_EXCEEDED) {
         this.dealLimitExceeded(itemRecord, titleRecord, platformRecord, databaseRecord, key)
-      }else if(metricType === MetricType.SEARCHES_PLATFORM) {
-        this.dealSearchesPlatform(platformRecord)
       }else if(metricType === MetricType.SEARCHES_REGULAR){
-        this.dealSearchesRegular(databaseRecord)
+        this.dealSearchesRegular(platformRecord, databaseRecord)
       }else if(metricType === MetricType.SEARCHES_AUTOMATED){
-        this.dealSearchesAutomated(databaseRecord)
+        this.dealSearchesAutomated(platformRecord, databaseRecord)
       }else if(metricType === MetricType.SEARCHES_FEDERATED){
         this.dealSearchesFederated(databaseRecord)
       }
@@ -326,15 +324,13 @@ export default class CounterStorage {
       itemRecord.map.limit_exceeded.set(key, now)
     }
 
-    dealSearchesPlatform(platformRecord: PlatformMapValue):void {
+    dealSearchesRegular(platformRecord: PlatformMapValue, databaseRecord: DatabaseMapValue):void {
       platformRecord.searches_platform++
-    }
-
-    dealSearchesRegular(databaseRecord: DatabaseMapValue):void {
       databaseRecord.searches_regular++
     }
 
-    dealSearchesAutomated(databaseRecord: DatabaseMapValue):void {
+    dealSearchesAutomated(platformRecord: PlatformMapValue, databaseRecord: DatabaseMapValue):void {
+      platformRecord.searches_platform++
       databaseRecord.searches_automated++
     }
 
