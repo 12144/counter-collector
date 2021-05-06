@@ -89,7 +89,16 @@ export default class CounterCollector {
    * @param platform_id 平台标识符
    * @param metric_type 指标类型可选值见枚举类型MetricType
    */
-    static collect(user_id: string, session_id:string, item_id: string, title_id:string, platform_id: string, database_id: string, metric_type: MetricType): void {
+    static collect(user_id: string, session_id:string, 
+      identifiers: {
+        item_id?:string;
+        title_id?:string;
+        platform_id?:string;
+        database_id?:string;
+      },
+      metric_type: MetricType
+    ): void {
+      const { item_id = '', title_id = '', platform_id = '', database_id = '' } = identifiers
       this[counterStorage].insert(user_id, session_id, item_id, title_id, platform_id, database_id, metric_type)
     }
 

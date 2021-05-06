@@ -74,7 +74,16 @@ async function testInvestigation(month: string): Promise<any> {
   // 访问前的状态
   const {preItemMetric,preTitleMetric,prePlatformMetric,preDatabaseMetric } = await getPreStatus('test7038','test8695', 'test1', 'database1', month)
   // 访问了item1-2-1
-  CounterCollector.collect(await CounterCollector.getUserId(), await CounterCollector.getSessionId(), 'test7038','test8695', 'test1', 'database1', MetricType.INVESTIGATION)
+  CounterCollector.collect(
+    await CounterCollector.getUserId(),
+    await CounterCollector.getSessionId(), 
+    {
+      item_id: 'test7038',
+      title_id: 'test8695',
+      platform_id: 'test1',
+      database_id: 'database1'
+    },
+    MetricType.INVESTIGATION)
   
   await CounterCollector.upload()
 
@@ -110,8 +119,27 @@ async function testUniqueInvestigation(month: string): Promise<any> {
   const user_id = await CounterCollector.getUserId()
   const session_id = await CounterCollector.getSessionId()
   // 访问了item1-2-1
-  CounterCollector.collect(user_id, session_id, 'test7038','test8695', 'test1', 'database1', MetricType.INVESTIGATION)
-  CounterCollector.collect(user_id, session_id, 'test7038','test8695', 'test1', 'database1', MetricType.INVESTIGATION)
+  CounterCollector.collect(
+    user_id, 
+    session_id, 
+    {
+      item_id: 'test7038',
+      title_id: 'test8695',
+      platform_id: 'test1',
+      database_id: 'database1'
+    },
+    MetricType.INVESTIGATION)
+
+  CounterCollector.collect(
+    user_id, 
+    session_id,
+    {
+      item_id: 'test7038',
+      title_id: 'test8695',
+      platform_id: 'test1',
+      database_id: 'database1'
+    },
+    MetricType.INVESTIGATION)
   
   await CounterCollector.upload()
 
@@ -147,7 +175,17 @@ async function testRequests(month: string): Promise<any> {
   const user_id = await CounterCollector.getUserId()
   const session_id = await CounterCollector.getSessionId()
   // 访问了item1-2-1
-  CounterCollector.collect(user_id, session_id, 'test7038','test8695', 'test1', 'database1', MetricType.REQUEST)
+  CounterCollector.collect(
+    user_id,
+    session_id, 
+    {
+      item_id: 'test7038',
+      title_id: 'test8695',
+      platform_id: 'test1',
+      database_id: 'database1'
+    },
+    MetricType.REQUEST)
+
   await CounterCollector.upload()
 
   preItemMetric.total_item_investigations++
@@ -193,8 +231,27 @@ async function testUniqueRequests(month: string): Promise<any> {
   const user_id = await CounterCollector.getUserId()
   const session_id = await CounterCollector.getSessionId()
   // 访问了item1-2-1
-  CounterCollector.collect(user_id, session_id, 'test7038','test8695', 'test1', 'database1', MetricType.REQUEST)
-  CounterCollector.collect(user_id, session_id, 'test7038','test8695', 'test1', 'database1', MetricType.REQUEST)
+  CounterCollector.collect(
+    user_id, 
+    session_id,
+    {
+      item_id: 'test7038',
+      title_id: 'test8695',
+      platform_id: 'test1',
+      database_id: 'database1'
+    },
+    MetricType.REQUEST)
+
+  CounterCollector.collect(
+    user_id,
+    session_id,
+    {
+      item_id: 'test7038',
+      title_id: 'test8695',
+      platform_id: 'test1',
+      database_id: 'database1'
+    },
+    MetricType.REQUEST)
 
   await CounterCollector.upload()
 
@@ -240,7 +297,16 @@ async function testNoLicense(month: string): Promise<any> {
   const user_id = await CounterCollector.getUserId()
   const session_id = await CounterCollector.getSessionId()
   // 访问了item1-2-1
-  CounterCollector.collect(user_id, session_id, 'test7038','test8695', 'test1', 'database1', MetricType.NO_LICENSE)
+  CounterCollector.collect(
+    user_id,
+    session_id,
+    {
+      item_id: 'test7038',
+      title_id: 'test8695',
+      platform_id: 'test1',
+      database_id: 'database1'
+    },
+    MetricType.NO_LICENSE)
 
   await CounterCollector.upload()
 
@@ -265,8 +331,27 @@ async function testDoubleClickNoLicense(month:string): Promise<any> {
   const user_id = await CounterCollector.getUserId()
   const session_id = await CounterCollector.getSessionId()
   // 访问了item1-2-1
-  CounterCollector.collect(user_id, session_id, 'test7038','test8695', 'test1', 'database1', MetricType.NO_LICENSE)
-  CounterCollector.collect(user_id, session_id, 'test7038','test8695', 'test1', 'database1', MetricType.NO_LICENSE)
+  CounterCollector.collect(
+    user_id,
+    session_id,
+    {
+      item_id: 'test7038',
+      title_id: 'test8695',
+      platform_id: 'test1',
+      database_id: 'database1'
+    },
+    MetricType.NO_LICENSE)
+
+  CounterCollector.collect(
+    user_id,
+    session_id,
+    {
+      item_id: 'test7038',
+      title_id: 'test8695',
+      platform_id: 'test1',
+      database_id: 'database1'
+    },
+    MetricType.NO_LICENSE)
 
   await CounterCollector.upload()
 
@@ -291,7 +376,16 @@ async function testLimitExceeded(month:string): Promise<any> {
   const user_id = await CounterCollector.getUserId()
   const session_id = await CounterCollector.getSessionId()
   // 访问了item1-2-1
-  CounterCollector.collect(user_id, session_id, 'test7038','test8695', 'test1', 'database1', MetricType.LIMIT_EXCEEDED)
+  CounterCollector.collect(
+    user_id,
+    session_id,
+    {
+      item_id: 'test7038',
+      title_id: 'test8695',
+      platform_id: 'test1',
+      database_id: 'database1'
+    },
+    MetricType.LIMIT_EXCEEDED)
 
   await CounterCollector.upload()
   
@@ -316,8 +410,27 @@ async function testDoubleClickLimitExceeded(month:string): Promise<any> {
   const user_id = await CounterCollector.getUserId()
   const session_id = await CounterCollector.getSessionId()
   // 访问了item1-2-1
-  CounterCollector.collect(user_id, session_id, 'test7038','test8695', 'test1', 'database1', MetricType.LIMIT_EXCEEDED)
-  CounterCollector.collect(user_id, session_id, 'test7038','test8695', 'test1', 'database1', MetricType.LIMIT_EXCEEDED)
+  CounterCollector.collect(
+    user_id,
+    session_id,
+    {
+      item_id: 'test7038',
+      title_id: 'test8695',
+      platform_id: 'test1',
+      database_id: 'database1'
+    },
+    MetricType.LIMIT_EXCEEDED)
+
+  CounterCollector.collect(
+    user_id,
+    session_id,
+    {
+      item_id: 'test7038',
+      title_id: 'test8695',
+      platform_id: 'test1',
+      database_id: 'database1'
+    },
+    MetricType.LIMIT_EXCEEDED)
 
   await CounterCollector.upload()
   
@@ -340,7 +453,16 @@ async function testTimeout(month: string): Promise<any> {
   // 访问前的状态
   const {preItemMetric,preTitleMetric,prePlatformMetric,preDatabaseMetric } = await getPreStatus('test7038','test8695', 'test1','database1', month)
   // 访问了item1-2-1
-  CounterCollector.collect(await CounterCollector.getUserId(), await CounterCollector.getSessionId(), 'test7038','test8695', 'test1', 'database1', MetricType.INVESTIGATION)
+  CounterCollector.collect(
+    await CounterCollector.getUserId(),
+    await CounterCollector.getSessionId(),
+    {
+      item_id: 'test7038',
+      title_id: 'test8695',
+      platform_id: 'test1',
+      database_id: 'database1'
+    },
+    MetricType.INVESTIGATION)
 
   preItemMetric.total_item_investigations++
   preItemMetric.unique_item_investigations++
@@ -379,9 +501,38 @@ async function testTimeoutContinuousDoubleClickItem(month: string): Promise<any>
   const user_id = await CounterCollector.getUserId()
   const session_id = await CounterCollector.getSessionId()
   // 短时间内连续访问3次item1-2-1， 应只记录一次
-  CounterCollector.collect(user_id, session_id, 'test7038','test8695', 'test1', 'database1', MetricType.INVESTIGATION)
-  CounterCollector.collect(user_id, session_id, 'test7038','test8695', 'test1', 'database1', MetricType.INVESTIGATION)
-  CounterCollector.collect(user_id, session_id, 'test7038','test8695', 'test1', 'database1', MetricType.INVESTIGATION)
+  CounterCollector.collect(
+    user_id,
+    session_id,
+    {
+      item_id: 'test7038',
+      title_id: 'test8695',
+      platform_id: 'test1',
+      database_id: 'database1'
+    },
+    MetricType.INVESTIGATION)
+
+  CounterCollector.collect(
+    user_id,
+    session_id,
+    {
+      item_id: 'test7038',
+      title_id: 'test8695',
+      platform_id: 'test1',
+      database_id: 'database1'
+    },
+    MetricType.INVESTIGATION)
+
+  CounterCollector.collect(
+    user_id,
+    session_id,
+    {
+      item_id: 'test7038',
+      title_id: 'test8695',
+      platform_id: 'test1',
+      database_id: 'database1'
+    },
+    MetricType.INVESTIGATION)
 
   preItemMetric.total_item_investigations++
   preItemMetric.unique_item_investigations++
@@ -420,7 +571,16 @@ async function testTimeoutNotDoubleClickItem(month: string): Promise<any> {
   const user_id = await CounterCollector.getUserId()
   const session_id = await CounterCollector.getSessionId()
   // 间隔30s以上访问2次item1-2-1， 应记录两次
-  CounterCollector.collect(user_id, session_id, 'test7038','test8695', 'test1', 'database1', MetricType.INVESTIGATION)
+  CounterCollector.collect(
+    user_id,
+    session_id,
+    {
+      item_id: 'test7038',
+      title_id: 'test8695',
+      platform_id: 'test1',
+      database_id: 'database1'
+    },
+    MetricType.INVESTIGATION)
 
   preItemMetric.total_item_investigations = preItemMetric.total_item_investigations + 2
   preItemMetric.unique_item_investigations++
@@ -439,7 +599,17 @@ async function testTimeoutNotDoubleClickItem(month: string): Promise<any> {
       
   return new Promise((resolve) => {
     setTimeout(() => {
-      CounterCollector.collect(user_id, session_id, 'test7038','test8695', 'test1', 'database1', MetricType.INVESTIGATION)    
+      CounterCollector.collect(
+        user_id,
+        session_id,
+        {
+          item_id: 'test7038',
+          title_id: 'test8695',
+          platform_id: 'test1',
+          database_id: 'database1'
+        },
+        MetricType.INVESTIGATION)  
+
       setTimeout(async function(){
         // 访问后的状态
         const {postItemMetric,postTitleMetric,postPlatformMetric, postDatabaseMetric } = await getPostStatus('test7038','test8695', 'test1','database1', month)
@@ -462,10 +632,49 @@ async function testTimeoutAllOptionItem(month: string): Promise<any> {
   const user_id = await CounterCollector.getUserId()
   const session_id = await CounterCollector.getSessionId()
   // 访问，下载，no_license. limit_exceeded各触发一次
-  CounterCollector.collect(user_id, session_id, 'test7038','test8695', 'test1', 'database1', MetricType.INVESTIGATION)
-  CounterCollector.collect(user_id, session_id, 'test7038','test8695', 'test1', 'database1', MetricType.REQUEST)
-  CounterCollector.collect(user_id, session_id, 'test7038','test8695', 'test1', 'database1', MetricType.NO_LICENSE)
-  CounterCollector.collect(user_id, session_id, 'test7038','test8695', 'test1', 'database1', MetricType.LIMIT_EXCEEDED)
+  CounterCollector.collect(
+    user_id, 
+    session_id,
+    {
+      item_id: 'test7038',
+      title_id: 'test8695',
+      platform_id: 'test1',
+      database_id: 'database1'
+    },
+    MetricType.INVESTIGATION)
+
+  CounterCollector.collect(
+    user_id,
+    session_id,
+    {
+      item_id: 'test7038',
+      title_id: 'test8695',
+      platform_id: 'test1',
+      database_id: 'database1'
+    },
+    MetricType.REQUEST)
+
+  CounterCollector.collect(
+    user_id, 
+    session_id,
+    {
+      item_id: 'test7038',
+      title_id: 'test8695',
+      platform_id: 'test1',
+      database_id: 'database1'
+    },
+    MetricType.NO_LICENSE)
+
+  CounterCollector.collect(
+    user_id,
+    session_id,
+    {
+      item_id: 'test7038',
+      title_id: 'test8695',
+      platform_id: 'test1',
+      database_id: 'database1'
+    },
+    MetricType.LIMIT_EXCEEDED)
 
   preItemMetric.total_item_investigations = preItemMetric.total_item_investigations + 2
   preItemMetric.total_item_requests++
@@ -523,17 +732,94 @@ async function testTimeoutComplicateOption(month: string): Promise<any> {
   const user_id = await CounterCollector.getUserId()
   const session_id = await CounterCollector.getSessionId()
   // 访问一次，下载两次间隔30s以上，no_license double click. limit_exceeded double click两次
-  CounterCollector.collect(user_id, session_id, 'test7038','test8695', 'test1', 'database1', MetricType.INVESTIGATION)
-  CounterCollector.collect(user_id, session_id, 'test7038','test8695', 'test1', 'database1', MetricType.REQUEST)
-  setTimeout(() =>{
-    CounterCollector.collect(user_id, session_id, 'test7038','test8695', 'test1', 'database1', MetricType.REQUEST)
-  }, LongerDoubleClickInternal)
-  CounterCollector.collect(user_id, session_id, 'test7038','test8695', 'test1', 'database1', MetricType.NO_LICENSE)
-  CounterCollector.collect(user_id, session_id, 'test7038','test8695', 'test1', 'database1', MetricType.NO_LICENSE)
+  CounterCollector.collect(
+    user_id,
+    session_id,
+    {
+      item_id: 'test7038',
+      title_id: 'test8695',
+      platform_id: 'test1',
+      database_id: 'database1'
+    },
+    MetricType.INVESTIGATION)
+  CounterCollector.collect(
+    user_id,
+    session_id,
+    {
+      item_id: 'test7038',
+      title_id: 'test8695',
+      platform_id: 'test1',
+      database_id: 'database1'
+    },
+    MetricType.REQUEST)
 
-  CounterCollector.collect(user_id, session_id, 'test7038','test8695', 'test1', 'database1', MetricType.LIMIT_EXCEEDED)
-  CounterCollector.collect(user_id, session_id, 'test7038','test8695', 'test1', 'database1', MetricType.LIMIT_EXCEEDED)
-  CounterCollector.collect(user_id, session_id, 'test7038','test8695', 'test1', 'database1', MetricType.LIMIT_EXCEEDED)
+  setTimeout(() =>{
+    CounterCollector.collect(
+      user_id,
+      session_id,
+      {
+        item_id: 'test7038',
+        title_id: 'test8695',
+        platform_id: 'test1',
+        database_id: 'database1'
+      },
+      MetricType.REQUEST)
+  }, LongerDoubleClickInternal)
+
+  CounterCollector.collect(
+    user_id,
+    session_id,
+    {
+      item_id: 'test7038',
+      title_id: 'test8695',
+      platform_id: 'test1',
+      database_id: 'database1'
+    },
+    MetricType.NO_LICENSE)
+     
+  CounterCollector.collect(
+    user_id,
+    session_id,
+    {
+      item_id: 'test7038',
+      title_id: 'test8695',
+      platform_id: 'test1',
+      database_id: 'database1'
+    },
+    MetricType.NO_LICENSE)
+
+  CounterCollector.collect(
+    user_id,
+    session_id,
+    {
+      item_id: 'test7038',
+      title_id: 'test8695',
+      platform_id: 'test1',
+      database_id: 'database1'
+    },
+    MetricType.LIMIT_EXCEEDED)
+
+  CounterCollector.collect(
+    user_id,
+    session_id,
+    {
+      item_id: 'test7038',
+      title_id: 'test8695',
+      platform_id: 'test1',
+      database_id: 'database1'
+    },
+    MetricType.LIMIT_EXCEEDED)
+
+  CounterCollector.collect(
+    user_id,
+    session_id,
+    {
+      item_id: 'test7038',
+      title_id: 'test8695',
+      platform_id: 'test1',
+      database_id: 'database1'
+    },
+    MetricType.LIMIT_EXCEEDED)
 
   preItemMetric.total_item_investigations = preItemMetric.total_item_investigations + 3
   preItemMetric.total_item_requests = preItemMetric.total_item_requests + 2
@@ -593,8 +879,27 @@ async function testDifferentInvestigation(month: string): Promise<any> {
   const user_id = await CounterCollector.getUserId()
   const session_id = await CounterCollector.getSessionId()
   // 访问了item1-2-1和item-1-2-2
-  CounterCollector.collect(user_id, session_id, 'test7038','test8695', 'test1', 'database1', MetricType.INVESTIGATION)
-  CounterCollector.collect(user_id, session_id, 'test9129','test8695', 'test1', 'database1', MetricType.INVESTIGATION)
+  CounterCollector.collect(
+    user_id,
+    session_id,
+    {
+      item_id: 'test7038',
+      title_id: 'test8695',
+      platform_id: 'test1',
+      database_id: 'database1'
+    },
+    MetricType.INVESTIGATION)
+
+  CounterCollector.collect(
+    user_id,
+    session_id,
+    {
+      item_id: 'test9129',
+      title_id: 'test8695',
+      platform_id: 'test1',
+      database_id: 'database1'
+    },
+    MetricType.INVESTIGATION)
   
   preItemMetric1.total_item_investigations++
   preItemMetric1.unique_item_investigations++
@@ -642,12 +947,71 @@ async function testCounterScenario(month: string): Promise<any> {
   const session_id = await CounterCollector.getSessionId()
 
   // 访问3个文章摘要（2个是属于同一日志），一个视频，下载之前两篇文章的pdf（属于同一日志），案例来自Release_5_TechNotes_PDFX_20190509-Revised
-  CounterCollector.collect(user_id, session_id, 'test7861','test3971', 'test2', 'database1', MetricType.INVESTIGATION)
-  CounterCollector.collect(user_id, session_id, 'test3742','test3971', 'test2', 'database1', MetricType.INVESTIGATION)
-  CounterCollector.collect(user_id, session_id, 'test3058','test7089', 'test2', 'database1', MetricType.INVESTIGATION)
-  CounterCollector.collect(user_id, session_id, 'test3456','test5647', 'test2', 'database1', MetricType.INVESTIGATION)
-  CounterCollector.collect(user_id, session_id, 'test7861','test3971', 'test2', 'database1', MetricType.REQUEST)
-  CounterCollector.collect(user_id, session_id, 'test3742','test3971', 'test2', 'database1', MetricType.REQUEST)
+  CounterCollector.collect(
+    user_id,
+    session_id,
+    {
+      item_id: 'test7861',
+      title_id: 'test3971',
+      platform_id: 'test2',
+      database_id: 'database1'
+    },
+    MetricType.INVESTIGATION)
+
+  CounterCollector.collect(
+    user_id,
+    session_id,
+    {
+      item_id: 'test3742',
+      title_id: 'test3971',
+      platform_id: 'test2',
+      database_id: 'database1'
+    },
+    MetricType.INVESTIGATION)
+
+  CounterCollector.collect(
+    user_id,
+    session_id,
+    {
+      item_id: 'test3058',
+      title_id: 'test7089',
+      platform_id: 'test2',
+      database_id: 'database1'
+    },
+    MetricType.INVESTIGATION)
+
+  CounterCollector.collect(
+    user_id,
+    session_id,
+    {
+      item_id: 'test3456',
+      title_id: 'test5647',
+      platform_id: 'test2',
+      database_id: 'database1'
+    },
+    MetricType.INVESTIGATION)
+
+  CounterCollector.collect(
+    user_id,
+    session_id,
+    {
+      item_id: 'test7861',
+      title_id: 'test3971',
+      platform_id: 'test2',
+      database_id: 'database1'
+    },
+    MetricType.REQUEST)
+
+  CounterCollector.collect(
+    user_id,
+    session_id,
+    {
+      item_id: 'test3742',
+      title_id: 'test3971',
+      platform_id: 'test2',
+      database_id: 'database1'
+    },
+    MetricType.REQUEST)
 
   prePlatformMetric.total_item_investigations = prePlatformMetric.total_item_investigations + 6
   prePlatformMetric.unique_item_investigations = prePlatformMetric.unique_item_investigations + 4
@@ -682,9 +1046,32 @@ async function testSearchesDatabase(month:string): Promise<any> {
 
   const user_id = await CounterCollector.getUserId()
   const session_id = await CounterCollector.getSessionId()
-  CounterCollector.collect(user_id, session_id, '','', 'test1', 'database1', MetricType.SEARCHES_REGULAR)
-  CounterCollector.collect(user_id, session_id, '','', 'test1', 'database1', MetricType.SEARCHES_AUTOMATED)
-  CounterCollector.collect(user_id, session_id, '','', 'test1', 'database1', MetricType.SEARCHES_FEDERATED)
+  CounterCollector.collect(
+    user_id,
+    session_id,
+    {
+      platform_id: 'test1',
+      database_id: 'database1'
+    },
+    MetricType.SEARCHES_REGULAR)
+
+  CounterCollector.collect(
+    user_id,
+    session_id,
+    {
+      platform_id: 'test1',
+      database_id: 'database1'
+    },
+    MetricType.SEARCHES_AUTOMATED)
+
+  CounterCollector.collect(
+    user_id,
+    session_id,
+    {
+      platform_id: 'test1',
+      database_id: 'database1'
+    },
+    MetricType.SEARCHES_FEDERATED)
 
   preDatabaseMetric.searches_regular++
   preDatabaseMetric.searches_automated++
@@ -709,8 +1096,27 @@ async function testClear(month:string): Promise<any> {
   const user_id = await CounterCollector.getUserId()
   const session_id = await CounterCollector.getSessionId()
 
-  CounterCollector.collect(user_id, session_id, 'test7038','test8695', 'test1', 'database1', MetricType.INVESTIGATION)
-  CounterCollector.collect(user_id, session_id+'123', 'test7038','test8695', 'test1', 'database1', MetricType.INVESTIGATION)
+  CounterCollector.collect(
+    user_id,
+    session_id,
+    {
+      item_id: 'test7038',
+      title_id: 'test8695',
+      platform_id: 'test1',
+      database_id: 'database1'
+    },
+    MetricType.INVESTIGATION)
+
+  CounterCollector.collect(
+    user_id,
+    session_id+'123',
+    {
+      item_id: 'test7038',
+      title_id: 'test8695',
+      platform_id: 'test1',
+      database_id: 'database1'
+    },
+    MetricType.INVESTIGATION)
   console.log(CounterCollector[counterStorage])
   
   // return new Promise((resolve) => {
