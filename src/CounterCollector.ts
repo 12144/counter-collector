@@ -35,6 +35,11 @@ export default class CounterCollector {
       const {interval = 1000*60*10, baseUrl = '' } = config
       CounterCollector[counterStorage] = new CounterStorage()
       CounterCollector.baseURL = baseUrl
+
+      if(CounterCollector[counterInterval]) {
+        clearInterval(CounterCollector[counterInterval])
+      }
+
       CounterCollector[counterInterval] = setInterval(function(){
         CounterCollector.upload().then(res => {
           if(res !== 'empty')
@@ -49,9 +54,11 @@ export default class CounterCollector {
         }, err => console.error(err))
       }
 
-      window.addEventListener('beforeunload', () => {
-        CounterCollector[counterStorage].store()
-      })
+      window.onbeforeunload = () => {
+        this.upload().then().catch(err => {
+          CounterCollector[counterStorage].store()
+        })
+      }
     }
 
     static async getUserId(user_id?:string, ip?: string): Promise<string>{
@@ -105,10 +112,10 @@ export default class CounterCollector {
     static upload(): Promise<any>{
       return new Promise((resolve, reject) => {
         const data: UploadData[] = this[counterStorage].toArray()
-  
+        
         if(data.length) {
           uploadData(data).then(res => {
-          // 上传成功后清空本地存储
+            // 上传成功后清空本地存储
             this[counterStorage].clear()
             resolve(data)
           }).catch(err => {

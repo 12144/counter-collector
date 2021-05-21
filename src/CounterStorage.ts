@@ -1,9 +1,8 @@
 // 本地存储
 import {MetricType} from './CounterCollector'
-import {mapToJson, jsonToMap, clearItemMap, clearTitleMap} from './util'
+import {mapToObject, objectToMap, clearItemMap, clearTitleMap} from './util'
 
 export const Config = { DoubleClickInternal : 30000 }
-
 /** MapValue 
  * 分为两个部分：指标信息和用于记录unique行为的map
  *  指标信息：unique_item_requests，total_item_requests等
@@ -450,10 +449,10 @@ export default class CounterStorage {
     store():void {
       const now = new Date()
       const data = {
-        itemMap: mapToJson(this.itemMap),
-        titleMap: mapToJson(this.titleMap),
-        platformMap: mapToJson(this.platformMap),
-        databaseMap: mapToJson(this.databaseMap),
+        itemMap: mapToObject(this.itemMap),
+        titleMap: mapToObject(this.titleMap),
+        platformMap: mapToObject(this.platformMap),
+        databaseMap: mapToObject(this.databaseMap),
         time: `${now.getFullYear()}-${now.getMonth()+1}-${now.getDate()}-${now.getHours()}`
       }
       
@@ -467,10 +466,10 @@ export default class CounterStorage {
         return false
       }
 
-      this.itemMap = jsonToMap(data.itemMap)
-      this.titleMap = jsonToMap(data.titleMap)
-      this.platformMap = jsonToMap(data.platformMap)
-      this.databaseMap = jsonToMap(data.databaseMap)
+      this.itemMap = objectToMap(data.itemMap)
+      this.titleMap = objectToMap(data.titleMap)
+      this.platformMap = objectToMap(data.platformMap)
+      this.databaseMap = objectToMap(data.databaseMap)
       
       localStorage.removeItem('collector-data')
 

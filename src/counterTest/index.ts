@@ -76,7 +76,7 @@ async function testInvestigation(month: string): Promise<any> {
   // 访问了item1-2-1
   CounterCollector.collect(
     await CounterCollector.getUserId(),
-    await CounterCollector.getSessionId(), 
+    Math.random() + (await CounterCollector.getSessionId()), 
     {
       item_id: 'test7038',
       title_id: 'test8695',
@@ -117,7 +117,7 @@ async function testUniqueInvestigation(month: string): Promise<any> {
   // 访问前的状态
   const {preItemMetric,preTitleMetric,prePlatformMetric, preDatabaseMetric } = await getPreStatus('test7038','test8695', 'test1', 'database1', month)
   const user_id = await CounterCollector.getUserId()
-  const session_id = await CounterCollector.getSessionId()
+  const session_id = Math.random() + (await CounterCollector.getSessionId())
   // 访问了item1-2-1
   CounterCollector.collect(
     user_id, 
@@ -173,7 +173,7 @@ async function testRequests(month: string): Promise<any> {
   // 访问前的状态
   const {preItemMetric,preTitleMetric,prePlatformMetric, preDatabaseMetric } = await getPreStatus('test7038','test8695', 'test1', 'database1', month)
   const user_id = await CounterCollector.getUserId()
-  const session_id = await CounterCollector.getSessionId()
+  const session_id = Math.random() + (await CounterCollector.getSessionId())
   // 访问了item1-2-1
   CounterCollector.collect(
     user_id,
@@ -229,7 +229,7 @@ async function testUniqueRequests(month: string): Promise<any> {
   // 访问前的状态
   const {preItemMetric,preTitleMetric,prePlatformMetric, preDatabaseMetric } = await getPreStatus('test7038','test8695', 'test1', 'database1', month)
   const user_id = await CounterCollector.getUserId()
-  const session_id = await CounterCollector.getSessionId()
+  const session_id = Math.random() + (await CounterCollector.getSessionId())
   // 访问了item1-2-1
   CounterCollector.collect(
     user_id, 
@@ -295,7 +295,7 @@ async function testNoLicense(month: string): Promise<any> {
   CounterCollector.init({baseUrl: CounterCollector.baseURL})
   const {preItemMetric,preTitleMetric,prePlatformMetric, preDatabaseMetric } = await getPreStatus('test7038','test8695', 'test1', 'database1', month)
   const user_id = await CounterCollector.getUserId()
-  const session_id = await CounterCollector.getSessionId()
+  const session_id = Math.random() + (await CounterCollector.getSessionId())
   // 访问了item1-2-1
   CounterCollector.collect(
     user_id,
@@ -329,7 +329,7 @@ async function testDoubleClickNoLicense(month:string): Promise<any> {
   CounterCollector.init({baseUrl: CounterCollector.baseURL})
   const {preItemMetric,preTitleMetric,prePlatformMetric, preDatabaseMetric } = await getPreStatus('test7038','test8695', 'test1', 'database1', month)
   const user_id = await CounterCollector.getUserId()
-  const session_id = await CounterCollector.getSessionId()
+  const session_id = Math.random() + (await CounterCollector.getSessionId())
   // 访问了item1-2-1
   CounterCollector.collect(
     user_id,
@@ -374,7 +374,7 @@ async function testLimitExceeded(month:string): Promise<any> {
   CounterCollector.init({baseUrl: CounterCollector.baseURL})
   const {preItemMetric,preTitleMetric,prePlatformMetric,preDatabaseMetric } = await getPreStatus('test7038','test8695', 'test1', 'database1', month)
   const user_id = await CounterCollector.getUserId()
-  const session_id = await CounterCollector.getSessionId()
+  const session_id = Math.random() + (await CounterCollector.getSessionId())
   // 访问了item1-2-1
   CounterCollector.collect(
     user_id,
@@ -408,7 +408,7 @@ async function testDoubleClickLimitExceeded(month:string): Promise<any> {
   CounterCollector.init({baseUrl: CounterCollector.baseURL})
   const {preItemMetric,preTitleMetric,prePlatformMetric, preDatabaseMetric } = await getPreStatus('test7038','test8695', 'test1','database1', month)
   const user_id = await CounterCollector.getUserId()
-  const session_id = await CounterCollector.getSessionId()
+  const session_id = Math.random() + (await CounterCollector.getSessionId())
   // 访问了item1-2-1
   CounterCollector.collect(
     user_id,
@@ -455,7 +455,7 @@ async function testTimeout(month: string): Promise<any> {
   // 访问了item1-2-1
   CounterCollector.collect(
     await CounterCollector.getUserId(),
-    await CounterCollector.getSessionId(),
+    Math.random() + (await CounterCollector.getSessionId()),
     {
       item_id: 'test7038',
       title_id: 'test8695',
@@ -499,7 +499,7 @@ async function testTimeoutContinuousDoubleClickItem(month: string): Promise<any>
   // 访问前的状态
   const {preItemMetric,preTitleMetric,prePlatformMetric,preDatabaseMetric } = await getPreStatus('test7038','test8695', 'test1','database1', month)
   const user_id = await CounterCollector.getUserId()
-  const session_id = await CounterCollector.getSessionId()
+  const session_id = Math.random() + (await CounterCollector.getSessionId())
   // 短时间内连续访问3次item1-2-1， 应只记录一次
   CounterCollector.collect(
     user_id,
@@ -569,7 +569,7 @@ async function testTimeoutNotDoubleClickItem(month: string): Promise<any> {
   // 访问前的状态
   const {preItemMetric,preTitleMetric,prePlatformMetric,preDatabaseMetric } = await getPreStatus('test7038','test8695', 'test1','database1', month)
   const user_id = await CounterCollector.getUserId()
-  const session_id = await CounterCollector.getSessionId()
+  const session_id = Math.random() + (await CounterCollector.getSessionId())
   // 间隔30s以上访问2次item1-2-1， 应记录两次
   CounterCollector.collect(
     user_id,
@@ -630,7 +630,7 @@ async function testTimeoutAllOptionItem(month: string): Promise<any> {
   // 访问前的状态
   const {preItemMetric,preTitleMetric,prePlatformMetric,preDatabaseMetric } = await getPreStatus('test7038','test8695', 'test1','database1', month)
   const user_id = await CounterCollector.getUserId()
-  const session_id = await CounterCollector.getSessionId()
+  const session_id = Math.random() + (await CounterCollector.getSessionId())
   // 访问，下载，no_license. limit_exceeded各触发一次
   CounterCollector.collect(
     user_id, 
@@ -730,7 +730,7 @@ async function testTimeoutComplicateOption(month: string): Promise<any> {
   // 访问前的状态
   const {preItemMetric,preTitleMetric,prePlatformMetric,preDatabaseMetric } = await getPreStatus('test7038','test8695', 'test1','database1', month)
   const user_id = await CounterCollector.getUserId()
-  const session_id = await CounterCollector.getSessionId()
+  const session_id = Math.random() + (await CounterCollector.getSessionId())
   // 访问一次，下载两次间隔30s以上，no_license double click. limit_exceeded double click两次
   CounterCollector.collect(
     user_id,
@@ -877,7 +877,7 @@ async function testDifferentInvestigation(month: string): Promise<any> {
   const {preItemMetric: preItemMetric2} = await getPreStatus('test9129','', '','', month)
   
   const user_id = await CounterCollector.getUserId()
-  const session_id = await CounterCollector.getSessionId()
+  const session_id = Math.random() + (await CounterCollector.getSessionId())
   // 访问了item1-2-1和item-1-2-2
   CounterCollector.collect(
     user_id,
@@ -944,7 +944,7 @@ async function testCounterScenario(month: string): Promise<any> {
   
   
   const user_id = await CounterCollector.getUserId()
-  const session_id = await CounterCollector.getSessionId()
+  const session_id = Math.random() + (await CounterCollector.getSessionId())
 
   // 访问3个文章摘要（2个是属于同一日志），一个视频，下载之前两篇文章的pdf（属于同一日志），案例来自Release_5_TechNotes_PDFX_20190509-Revised
   CounterCollector.collect(
@@ -1045,7 +1045,7 @@ async function testSearchesDatabase(month:string): Promise<any> {
   const { prePlatformMetric, preDatabaseMetric } = await getPreStatus('','', 'test1', 'database1', month)
 
   const user_id = await CounterCollector.getUserId()
-  const session_id = await CounterCollector.getSessionId()
+  const session_id = Math.random() + (await CounterCollector.getSessionId())
   CounterCollector.collect(
     user_id,
     session_id,
@@ -1094,7 +1094,7 @@ async function testSearchesDatabase(month:string): Promise<any> {
 async function testClear(month:string): Promise<any> {
   CounterCollector.init({interval:5000, baseUrl: CounterCollector.baseURL})
   const user_id = await CounterCollector.getUserId()
-  const session_id = await CounterCollector.getSessionId()
+  const session_id = Math.random() + (await CounterCollector.getSessionId())
 
   CounterCollector.collect(
     user_id,
