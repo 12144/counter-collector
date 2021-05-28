@@ -456,11 +456,15 @@ export default class CounterStorage {
         time: `${now.getFullYear()}-${now.getMonth()+1}-${now.getDate()}-${now.getHours()}`
       }
       
-      localStorage.setItem('collector-data', JSON.stringify(data))
+      if(localStorage){
+        localStorage.setItem('collector-data', JSON.stringify(data))
+      }
     }
 
     // 从localstorage将数据取出，返回true表示需要上传数据，返回false表示不需要上传数据
     retrive():boolean {
+      if(!localStorage) return false
+      
       const data = JSON.parse(localStorage.getItem('collector-data')!)
       if(!data){
         return false
